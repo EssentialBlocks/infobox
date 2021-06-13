@@ -14,7 +14,10 @@ import "./editor.scss";
  * Internal dependencies
  */
 
-import { mimmikCssForPreviewBtnClick } from "../util/helpers";
+import {
+	mimmikCssForPreviewBtnClick,
+	duplicateBlockIdFix,
+} from "../util/helpers";
 
 import {
 	softMinifyCssStrings,
@@ -173,50 +176,14 @@ const Edit = ({ attributes, setAttributes, isSelected, clientId }) => {
 
 	// this useEffect is for creating a unique blockId for each block's unique className
 	useEffect(() => {
-		// const current_block_id = attributes.blockId;
-
 		const BLOCK_PREFIX = "eb-infobox";
-		const unique_id =
-			BLOCK_PREFIX + "-" + Math.random().toString(36).substr(2, 7);
-
-		/**
-		 * Define and Generate Unique Block ID
-		 */
-		if (!blockId) {
-			setAttributes({ blockId: unique_id });
-		}
-
-		/**
-		 * Assign New Unique ID when duplicate BlockId found
-		 * Mostly happens when User Duplicate a Block
-		 */
-		const all_blocks = select("core/block-editor").getBlocks();
-
-		// console.log({ all_blocks });
-
-		let duplicateFound = false;
-		const fixDuplicateBlockId = (blocks) => {
-			if (duplicateFound) return;
-			for (const item of blocks) {
-				const { innerBlocks } = item;
-				if (item.attributes.blockId === blockId) {
-					if (item.clientId !== clientId) {
-						setAttributes({ blockId: unique_id });
-						// console.log("found a duplicate");
-						duplicateFound = true;
-						return;
-					} else if (innerBlocks.length > 0) {
-						fixDuplicateBlockId(innerBlocks);
-					}
-				} else if (innerBlocks.length > 0) {
-					fixDuplicateBlockId(innerBlocks);
-				}
-			}
-		};
-
-		fixDuplicateBlockId(all_blocks);
-
-		// console.log({ blockId });
+		duplicateBlockIdFix({
+			BLOCK_PREFIX,
+			blockId,
+			setAttributes,
+			select,
+			clientId,
+		});
 	}, []);
 
 	useEffect(() => {

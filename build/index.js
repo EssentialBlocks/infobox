@@ -4442,12 +4442,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _constants_borderShadowConstants__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./constants/borderShadowConstants */ "./src/constants/borderShadowConstants.js");
 
 
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 /**
  * WordPress dependencies
  */
@@ -4535,62 +4529,14 @@ var Edit = function Edit(_ref) {
   }, []); // this useEffect is for creating a unique blockId for each block's unique className
 
   Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    // const current_block_id = attributes.blockId;
     var BLOCK_PREFIX = "eb-infobox";
-    var unique_id = BLOCK_PREFIX + "-" + Math.random().toString(36).substr(2, 7);
-    /**
-     * Define and Generate Unique Block ID
-     */
-
-    if (!blockId) {
-      setAttributes({
-        blockId: unique_id
-      });
-    }
-    /**
-     * Assign New Unique ID when duplicate BlockId found
-     * Mostly happens when User Duplicate a Block
-     */
-
-
-    var all_blocks = select("core/block-editor").getBlocks(); // console.log({ all_blocks });
-
-    var duplicateFound = false;
-
-    var fixDuplicateBlockId = function fixDuplicateBlockId(blocks) {
-      if (duplicateFound) return;
-
-      var _iterator = _createForOfIteratorHelper(blocks),
-          _step;
-
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var item = _step.value;
-          var innerBlocks = item.innerBlocks;
-
-          if (item.attributes.blockId === blockId) {
-            if (item.clientId !== clientId) {
-              setAttributes({
-                blockId: unique_id
-              }); // console.log("found a duplicate");
-
-              duplicateFound = true;
-              return;
-            } else if (innerBlocks.length > 0) {
-              fixDuplicateBlockId(innerBlocks);
-            }
-          } else if (innerBlocks.length > 0) {
-            fixDuplicateBlockId(innerBlocks);
-          }
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-    };
-
-    fixDuplicateBlockId(all_blocks); // console.log({ blockId });
+    Object(_util_helpers__WEBPACK_IMPORTED_MODULE_5__["duplicateBlockIdFix"])({
+      BLOCK_PREFIX: BLOCK_PREFIX,
+      blockId: blockId,
+      setAttributes: setAttributes,
+      select: select,
+      clientId: clientId
+    });
   }, []);
   Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     Object(_util_helpers__WEBPACK_IMPORTED_MODULE_5__["mimmikCssForPreviewBtnClick"])({
@@ -7892,7 +7838,7 @@ var GradientColorControl = function GradientColorControl(_ref) {
 /*!*******************************!*\
   !*** ./util/helpers/index.js ***!
   \*******************************/
-/*! exports provided: hasVal, generateBackgroundAttributes, generateDimensionsAttributes, generateTypographyAttributes, generateBorderShadowAttributes, textInsideForEdit, generateRandomNumber, hardMinifyCssStrings, softMinifyCssStrings, isCssExists, generateTypographyStyles, generateDimensionsControlStyles, generateBorderShadowStyles, generateBackgroundControlStyles, generateResponsiveRangeAttributes, generateResponsiveRangeStyles, getFlipTransform, getButtonClasses, getBackgroundImage, handleDesktopBtnClick, handleTabBtnClick, handleMobileBtnClick, mimmikCssForResBtns, mimmikCssForPreviewBtnClick */
+/*! exports provided: hasVal, generateBackgroundAttributes, generateDimensionsAttributes, generateTypographyAttributes, generateBorderShadowAttributes, textInsideForEdit, generateRandomNumber, hardMinifyCssStrings, softMinifyCssStrings, isCssExists, generateTypographyStyles, generateDimensionsControlStyles, generateBorderShadowStyles, generateBackgroundControlStyles, generateResponsiveRangeAttributes, generateResponsiveRangeStyles, getFlipTransform, getButtonClasses, getBackgroundImage, handleDesktopBtnClick, handleTabBtnClick, handleMobileBtnClick, mimmikCssForResBtns, mimmikCssForPreviewBtnClick, duplicateBlockIdFix */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7921,9 +7867,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "handleMobileBtnClick", function() { return handleMobileBtnClick; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mimmikCssForResBtns", function() { return mimmikCssForResBtns; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mimmikCssForPreviewBtnClick", function() { return mimmikCssForPreviewBtnClick; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "duplicateBlockIdFix", function() { return duplicateBlockIdFix; });
 /* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/defineProperty.js");
 /* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__);
 
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
@@ -8753,28 +8706,28 @@ var getBackgroundImage = function getBackgroundImage(type, gradientValue, imageU
 var handleDesktopBtnClick = function handleDesktopBtnClick(_ref18) {
   var setPreviewDeviceType = _ref18.setPreviewDeviceType,
       setAttributes = _ref18.setAttributes;
-  setPreviewDeviceType("Desktop");
   setAttributes({
     resOption: "Desktop"
   });
+  setPreviewDeviceType("Desktop");
 }; // function 2: to handle Tab button click
 
 var handleTabBtnClick = function handleTabBtnClick(_ref19) {
   var setPreviewDeviceType = _ref19.setPreviewDeviceType,
       setAttributes = _ref19.setAttributes;
-  setPreviewDeviceType("Tablet");
   setAttributes({
     resOption: "Tablet"
   });
+  setPreviewDeviceType("Tablet");
 }; // function 3: to handle Mobile button click
 
 var handleMobileBtnClick = function handleMobileBtnClick(_ref20) {
   var setPreviewDeviceType = _ref20.setPreviewDeviceType,
       setAttributes = _ref20.setAttributes;
-  setPreviewDeviceType("Mobile");
   setAttributes({
     resOption: "Mobile"
   });
+  setPreviewDeviceType("Mobile");
 }; //
 // function to mimmik css when clicking the responsive buttons in the inspector panel
 
@@ -8791,9 +8744,6 @@ var mimmikCssForResBtns = function mimmikCssForResBtns(_ref21) {
     allEbBlocksWrapper = domObj.querySelectorAll(".eb-guten-block-main-parent-wrapper:not(.is-selected) > style");
   }
 
-  console.log("---inspector", {
-    allEbBlocksWrapper: allEbBlocksWrapper
-  });
   if (allEbBlocksWrapper.length < 1) return;
   allEbBlocksWrapper.forEach(function (styleTag) {
     var cssStrings = styleTag.textContent;
@@ -8843,6 +8793,69 @@ var mimmikCssForPreviewBtnClick = function mimmikCssForPreviewBtnClick(_ref22) {
       }, 0);
     }
   });
+}; //
+//
+
+var duplicateBlockIdFix = function duplicateBlockIdFix(_ref23) {
+  var BLOCK_PREFIX = _ref23.BLOCK_PREFIX,
+      blockId = _ref23.blockId,
+      setAttributes = _ref23.setAttributes,
+      select = _ref23.select,
+      clientId = _ref23.clientId;
+  var unique_id = BLOCK_PREFIX + "-" + Math.random().toString(36).substr(2, 7);
+  /**
+   * Define and Generate Unique Block ID
+   */
+
+  if (!blockId) {
+    setAttributes({
+      blockId: unique_id
+    });
+  }
+  /**
+   * Assign New Unique ID when duplicate BlockId found
+   * Mostly happens when User Duplicate a Block
+   */
+
+
+  var all_blocks = select("core/block-editor").getBlocks(); // console.log({ all_blocks });
+
+  var duplicateFound = false;
+
+  var fixDuplicateBlockId = function fixDuplicateBlockId(blocks) {
+    if (duplicateFound) return;
+
+    var _iterator = _createForOfIteratorHelper(blocks),
+        _step;
+
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var item = _step.value;
+        var innerBlocks = item.innerBlocks;
+
+        if (item.attributes.blockId === blockId) {
+          if (item.clientId !== clientId) {
+            setAttributes({
+              blockId: unique_id
+            }); // console.log("found a duplicate");
+
+            duplicateFound = true;
+            return;
+          } else if (innerBlocks.length > 0) {
+            fixDuplicateBlockId(innerBlocks);
+          }
+        } else if (innerBlocks.length > 0) {
+          fixDuplicateBlockId(innerBlocks);
+        }
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+  };
+
+  fixDuplicateBlockId(all_blocks);
 };
 
 /***/ }),
