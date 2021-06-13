@@ -5,6 +5,9 @@ import { __ } from "@wordpress/i18n";
 import { useBlockProps, MediaUpload, RichText } from "@wordpress/block-editor";
 import { Button } from "@wordpress/components";
 import { useEffect } from "@wordpress/element";
+
+const { select } = wp.data;
+
 import "./editor.scss";
 
 /**
@@ -161,19 +164,9 @@ const Edit = ({ attributes, setAttributes, isSelected, clientId }) => {
 
 	// this useEffect is for setting the resOption attribute to desktop/tab/mobile depending on the added 'eb-res-option-' class
 	useEffect(() => {
-		const bodyClasses = document.body.className;
-
-		if (!/eb\-res\-option\-/i.test(bodyClasses)) {
-			document.body.classList.add("eb-res-option-desktop");
-			setAttributes({
-				resOption: "desktop",
-			});
-		} else {
-			const resOption = bodyClasses
-				.match(/eb-res-option-[^\s]+/g)[0]
-				.split("-")[3];
-			setAttributes({ resOption });
-		}
+		setAttributes({
+			resOption: select("core/edit-post").__experimentalGetPreviewDeviceType(),
+		});
 	}, []);
 
 	// this useEffect is for creating a unique blockId for each block's unique className
@@ -195,7 +188,7 @@ const Edit = ({ attributes, setAttributes, isSelected, clientId }) => {
 		 * Assign New Unique ID when duplicate BlockId found
 		 * Mostly happens when User Duplicate a Block
 		 */
-		const all_blocks = wp.data.select("core/block-editor").getBlocks();
+		const all_blocks = select("core/block-editor").getBlocks();
 
 		// console.log({ all_blocks });
 
@@ -223,6 +216,33 @@ const Edit = ({ attributes, setAttributes, isSelected, clientId }) => {
 
 		// console.log({ blockId });
 	}, []);
+
+	//
+	// useEffect(() => {
+	// 	console.log("-----edit.js useEffect with [] dependency", wp);
+
+	// 	const bodyClasses = document.body.className;
+
+	// 	if (/eb\-mimmik\-added/i.test(bodyClasses)) return;
+
+	// 	document.body.classList.add("eb-mimmik-added");
+
+	// 	console.log("----'eb-mimmik-added' class added to body");
+
+	// 	const wpResBtnsWrap = document
+	// 		.getElementById("editor")
+	// 		.querySelector(".edit-post-layout + .popover-slot");
+
+	// 	console.log("---wpResBtnsWrap", wpResBtnsWrap);
+
+	// 	wpResBtnsWrap.addEventListener("click", (e) => {
+	// 		const btn = e.target;
+	// 		console.log("---from the eventlistener in edit.js", btn);
+	// 		if (/block\-editor\-post\-preview__button\-resize/i.test(btn.className)) {
+	// 			const resDevice = btn.querySelector("span").textContent;
+	// 		}
+	// 	});
+	// }, []);
 
 	const blockProps = useBlockProps({
 		className: `eb-guten-block-main-parent-wrapper`,
@@ -1033,8 +1053,8 @@ const Edit = ({ attributes, setAttributes, isSelected, clientId }) => {
 
 				/* mimmikcssStart */
 
-				${resOption === "tab" ? tabAllStyles : " "}
-				${resOption === "mobile" ? tabAllStyles + mobileAllStyles : " "}
+				${resOption === "Tablet" ? tabAllStyles : " "}
+				${resOption === "Mobile" ? tabAllStyles + mobileAllStyles : " "}
 
 				/* mimmikcssEnd */
 

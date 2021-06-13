@@ -28,7 +28,7 @@ const attributes = {
 	// responsive control attributes ⬇
 	resOption: {
 		type: "string",
-		default: "desktop",
+		default: "Desktop",
 	},
 
 	// blockId attribute for making unique className and other uniqueness ⬇

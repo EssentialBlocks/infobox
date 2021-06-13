@@ -222,22 +222,11 @@ function Inspector(props) {
 
 	// this useEffect is for setting the resOption attribute to desktop/tab/mobile depending on the added 'eb-res-option-' class only the first time once
 	useEffect(() => {
-		const bodyClasses = document.body.className;
-		// console.log("----log from inspector useEffect with empty []", {
-		// 	bodyClasses,
-		// });
-
-		if (!/eb\-res\-option\-/i.test(bodyClasses)) {
-			document.body.classList.add("eb-res-option-desktop");
-			setAttributes({
-				resOption: "desktop",
-			});
-		} else {
-			const resOption = bodyClasses
-				.match(/eb-res-option-[^\s]+/g)[0]
-				.split("-")[3];
-			setAttributes({ resOption });
-		}
+		setAttributes({
+			resOption: wp.data
+				.select("core/edit-post")
+				.__experimentalGetPreviewDeviceType(),
+		});
 	}, []);
 
 	// this useEffect is for mimmiking css for all the eb blocks on resOption changing
@@ -251,16 +240,16 @@ function Inspector(props) {
 		allEbBlocksWrapper.forEach((styleTag) => {
 			const cssStrings = styleTag.textContent;
 			const minCss = cssStrings.replace(/\s+/g, " ");
-			console.log({ minCss });
+			// console.log({ minCss });
 			const regexCssMimmikSpace = /(?<=mimmikcssStart\s\*\/).+(?=\/\*\smimmikcssEnd)/i;
 			let newCssStrings = " ";
-			if (resOption === "tab") {
+			if (resOption === "Tablet") {
 				const tabCssStrings = (minCss.match(
 					/tabcssStart\s\*\/(.+)(?=\/\*\stabcssEnd)/i
 				) || [, " "])[1];
-				console.log({ tabCssStrings });
+				// console.log({ tabCssStrings });
 				newCssStrings = minCss.replace(regexCssMimmikSpace, tabCssStrings);
-			} else if (resOption === "mobile") {
+			} else if (resOption === "Mobile") {
 				const tabCssStrings = (minCss.match(
 					/tabcssStart\s\*\/(.+)(?=\/\*\stabcssEnd)/i
 				) || [, " "])[1];
@@ -453,7 +442,7 @@ function Inspector(props) {
 										className="for-icon-size"
 										resRequiredProps={resRequiredProps}
 									>
-										{resOption == "desktop" && (
+										{resOption == "Desktop" && (
 											<RangeControl
 												label={__("Icon Size")}
 												value={iconSize}
@@ -463,7 +452,7 @@ function Inspector(props) {
 											/>
 										)}
 
-										{resOption == "tab" && (
+										{resOption == "Tablet" && (
 											<ResetControl
 												onReset={() =>
 													setAttributes({ TABiconSize: undefined })
@@ -481,7 +470,7 @@ function Inspector(props) {
 											</ResetControl>
 										)}
 
-										{resOption == "mobile" && (
+										{resOption == "Mobile" && (
 											<ResetControl
 												onReset={() =>
 													setAttributes({ MOBiconSize: undefined })
@@ -637,7 +626,7 @@ function Inspector(props) {
 										className="for-media-image-width"
 										resRequiredProps={resRequiredProps}
 									>
-										{resOption == "desktop" && (
+										{resOption == "Desktop" && (
 											<RangeControl
 												label={__("Image Width")}
 												value={mediaImgWidth}
@@ -649,7 +638,7 @@ function Inspector(props) {
 											/>
 										)}
 
-										{resOption == "tab" && (
+										{resOption == "Tablet" && (
 											<ResetControl
 												onReset={() =>
 													setAttributes({ TABmediaImgWidth: undefined })
@@ -667,7 +656,7 @@ function Inspector(props) {
 											</ResetControl>
 										)}
 
-										{resOption == "mobile" && (
+										{resOption == "Mobile" && (
 											<ResetControl
 												onReset={() =>
 													setAttributes({ MOBmediaImgWidth: undefined })
@@ -709,7 +698,7 @@ function Inspector(props) {
 												className="for-media-image-height"
 												resRequiredProps={resRequiredProps}
 											>
-												{resOption == "desktop" && (
+												{resOption == "Desktop" && (
 													<RangeControl
 														label={__("Image Height")}
 														value={mediaImgHeight}
@@ -721,7 +710,7 @@ function Inspector(props) {
 													/>
 												)}
 
-												{resOption == "tab" && (
+												{resOption == "Tablet" && (
 													<ResetControl
 														onReset={() =>
 															setAttributes({ TABmediaImgHeight: undefined })
@@ -739,7 +728,7 @@ function Inspector(props) {
 													</ResetControl>
 												)}
 
-												{resOption == "mobile" && (
+												{resOption == "Mobile" && (
 													<ResetControl
 														onReset={() =>
 															setAttributes({ MOBmediaImgHeight: undefined })
