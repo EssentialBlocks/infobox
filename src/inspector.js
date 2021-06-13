@@ -22,7 +22,10 @@ const { select } = wp.data;
  * Internal dependencies
  */
 
-import { mimmikCssForResBtns } from "../util/helpers";
+import {
+	mimmikCssForResBtns,
+	mimmikCssOnPreviewBtnClickWhileBlockSelected,
+} from "../util/helpers";
 
 import FontIconPicker from "@fonticonpicker/react-fonticonpicker";
 import faIcons from "../util/faIcons.js";
@@ -200,28 +203,6 @@ function Inspector(props) {
 
 		//
 		contentsAlignment,
-
-		// // border attributes ⬇
-		// wrp_borderColor,
-		// wrp_borderStyle,
-		// wrp_borderWidth,
-		// wrp_borderRadius,
-		// wrp_radiusUnit,
-
-		// // shadow attributes  ⬇
-		// wrp_hOffset,
-		// wrp_vOffset,
-		// wrp_blur,
-		// wrp_spread,
-		// wrp_shadowColor,
-		// wrp_inset,
-		// wrp_shadowType,
-		// wrp_hoverHOffset,
-		// wrp_hoverVOffset,
-		// wrp_hoverBlur,
-		// wrp_hoverSpread,
-		// wrp_hoverShadowColor,
-		// wrp_transitionTime,
 	} = attributes;
 
 	// this useEffect is for setting the resOption attribute to desktop/tab/mobile depending on the added 'eb-res-option-' class only the first time once
@@ -239,12 +220,25 @@ function Inspector(props) {
 		});
 	}, [resOption]);
 
+	// this useEffect is to mimmik css for responsive preview in the editor page when clicking the buttons in the 'Preview button of wordpress' located beside the 'update' button while any block is selected and it's inspector panel is mounted in the DOM
+	useEffect(() => {
+		const cleanUp = mimmikCssOnPreviewBtnClickWhileBlockSelected({
+			domObj: document,
+			select,
+			setAttributes,
+		});
+		return () => {
+			cleanUp();
+		};
+	}, []);
+
 	const resRequiredProps = {
 		setAttributes,
 		resOption,
 		attributes,
 	};
 
+	// this useEffect is for setting the preset from the infobox settings option
 	useEffect(() => {
 		switch (layoutPreset) {
 			case "preset1":

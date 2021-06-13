@@ -186,6 +186,7 @@ const Edit = ({ attributes, setAttributes, isSelected, clientId }) => {
 		});
 	}, []);
 
+	// this useEffect is for mimmiking css when responsive options clicked from wordpress's 'preview' button
 	useEffect(() => {
 		mimmikCssForPreviewBtnClick({
 			domObj: document,

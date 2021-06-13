@@ -4537,7 +4537,8 @@ var Edit = function Edit(_ref) {
       select: select,
       clientId: clientId
     });
-  }, []);
+  }, []); // this useEffect is for mimmiking css when responsive options clicked from wordpress's 'preview' button
+
   Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     Object(_util_helpers__WEBPACK_IMPORTED_MODULE_5__["mimmikCssForPreviewBtnClick"])({
       domObj: document,
@@ -5157,12 +5158,24 @@ function Inspector(props) {
       domObj: document,
       resOption: resOption
     });
-  }, [resOption]);
+  }, [resOption]); // this useEffect is to mimmik css for responsive preview in the editor page when clicking the buttons in the 'Preview button of wordpress' located beside the 'update' button while any block is selected and it's inspector panel is mounted in the DOM
+
+  Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    var cleanUp = Object(_util_helpers__WEBPACK_IMPORTED_MODULE_4__["mimmikCssOnPreviewBtnClickWhileBlockSelected"])({
+      domObj: document,
+      select: select,
+      setAttributes: setAttributes
+    });
+    return function () {
+      cleanUp();
+    };
+  }, []);
   var resRequiredProps = {
     setAttributes: setAttributes,
     resOption: resOption,
     attributes: attributes
-  };
+  }; // this useEffect is for setting the preset from the infobox settings option
+
   Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     switch (layoutPreset) {
       case "preset1":
@@ -7836,7 +7849,7 @@ var GradientColorControl = function GradientColorControl(_ref) {
 /*!*******************************!*\
   !*** ./util/helpers/index.js ***!
   \*******************************/
-/*! exports provided: hasVal, generateBackgroundAttributes, generateDimensionsAttributes, generateTypographyAttributes, generateBorderShadowAttributes, textInsideForEdit, generateRandomNumber, hardMinifyCssStrings, softMinifyCssStrings, isCssExists, generateTypographyStyles, generateDimensionsControlStyles, generateBorderShadowStyles, generateBackgroundControlStyles, generateResponsiveRangeAttributes, generateResponsiveRangeStyles, getFlipTransform, getButtonClasses, getBackgroundImage, handleDesktopBtnClick, handleTabBtnClick, handleMobileBtnClick, mimmikCssForResBtns, mimmikCssForPreviewBtnClick, duplicateBlockIdFix */
+/*! exports provided: hasVal, generateBackgroundAttributes, generateDimensionsAttributes, generateTypographyAttributes, generateBorderShadowAttributes, textInsideForEdit, generateRandomNumber, hardMinifyCssStrings, softMinifyCssStrings, isCssExists, generateTypographyStyles, generateDimensionsControlStyles, generateBorderShadowStyles, generateBackgroundControlStyles, generateResponsiveRangeAttributes, generateResponsiveRangeStyles, getFlipTransform, getButtonClasses, getBackgroundImage, handleDesktopBtnClick, handleTabBtnClick, handleMobileBtnClick, mimmikCssForResBtns, mimmikCssForPreviewBtnClick, mimmikCssOnPreviewBtnClickWhileBlockSelected, duplicateBlockIdFix */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7865,6 +7878,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "handleMobileBtnClick", function() { return handleMobileBtnClick; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mimmikCssForResBtns", function() { return mimmikCssForResBtns; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mimmikCssForPreviewBtnClick", function() { return mimmikCssForPreviewBtnClick; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mimmikCssOnPreviewBtnClickWhileBlockSelected", function() { return mimmikCssOnPreviewBtnClickWhileBlockSelected; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "duplicateBlockIdFix", function() { return duplicateBlockIdFix; });
 /* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/defineProperty.js");
 /* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__);
@@ -8768,7 +8782,7 @@ var mimmikCssForResBtns = function mimmikCssForResBtns(_ref21) {
   });
 }; //
 // IMPORTANT: The following fuction declaration must be below the 'mimmikCssForResBtns' function declaration
-// function to mimmik css when clicking the buttons in the 'Preview button of wordpress' located beside the 'update' button
+// function to mimmik css for responsive preview when clicking the buttons in the 'Preview button of wordpress' located beside the 'update' button
 
 var mimmikCssForPreviewBtnClick = function mimmikCssForPreviewBtnClick(_ref22) {
   var domObj = _ref22.domObj,
@@ -8780,7 +8794,7 @@ var mimmikCssForPreviewBtnClick = function mimmikCssForPreviewBtnClick(_ref22) {
   wpResBtnsWrap.addEventListener("click", function (e) {
     if (/block\-editor\-post\-preview__button\-resize|components\-menu\-item__item/i.test(e.target.className)) {
       setTimeout(function () {
-        var resOption = select("core/edit-post").__experimentalGetPreviewDeviceType(); // console.log("---resoption from setTimeout", { resOption });
+        var resOption = select("core/edit-post").__experimentalGetPreviewDeviceType(); // console.log("---mimmikCssForPreviewBtnClick", { resOption });
 
 
         mimmikCssForResBtns({
@@ -8791,15 +8805,46 @@ var mimmikCssForPreviewBtnClick = function mimmikCssForPreviewBtnClick(_ref22) {
       }, 0);
     }
   });
-}; //
-//
+}; // IMPORTANT: The following fuction declaration must be below the 'mimmikCssForResBtns' function declaration
+// function to mimmik css for responsive preview when clicking the buttons in the 'Preview button of wordpress' located beside the 'update' button while any block is selected and it's inspector panel is mounted in the DOM
 
-var duplicateBlockIdFix = function duplicateBlockIdFix(_ref23) {
-  var BLOCK_PREFIX = _ref23.BLOCK_PREFIX,
-      blockId = _ref23.blockId,
-      setAttributes = _ref23.setAttributes,
+var mimmikCssOnPreviewBtnClickWhileBlockSelected = function mimmikCssOnPreviewBtnClickWhileBlockSelected(_ref23) {
+  var domObj = _ref23.domObj,
       select = _ref23.select,
-      clientId = _ref23.clientId;
+      setAttributes = _ref23.setAttributes;
+  var wpResBtnsWrap = domObj.querySelector("#editor .edit-post-layout + .popover-slot");
+
+  var handleCLick = function handleCLick(e) {
+    if (/block\-editor\-post\-preview__button\-resize|components\-menu\-item__item/i.test(e.target.className)) {
+      setTimeout(function () {
+        var resOption = select("core/edit-post").__experimentalGetPreviewDeviceType(); // console.log("---resoption from setTimeout", { resOption });
+
+
+        mimmikCssForResBtns({
+          isForPreviewButton: true,
+          domObj: domObj,
+          resOption: resOption
+        });
+        setAttributes({
+          resOption: resOption
+        });
+      }, 0);
+    }
+  };
+
+  wpResBtnsWrap.addEventListener("click", handleCLick);
+  return function () {
+    wpResBtnsWrap.removeEventListener("click", handleCLick);
+  };
+}; //
+// this function is for creating a unique blockId for each block's unique className
+
+var duplicateBlockIdFix = function duplicateBlockIdFix(_ref24) {
+  var BLOCK_PREFIX = _ref24.BLOCK_PREFIX,
+      blockId = _ref24.blockId,
+      setAttributes = _ref24.setAttributes,
+      select = _ref24.select,
+      clientId = _ref24.clientId;
   var unique_id = BLOCK_PREFIX + "-" + Math.random().toString(36).substr(2, 7);
   /**
    * Define and Generate Unique Block ID
