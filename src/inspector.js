@@ -16,9 +16,13 @@ import {
 	ButtonGroup,
 } from "@wordpress/components";
 
+const { select } = wp.data;
+
 /**
  * Internal dependencies
  */
+
+import { mimmikCssForResBtns } from "../util/helpers";
 
 import FontIconPicker from "@fonticonpicker/react-fonticonpicker";
 import faIcons from "../util/faIcons.js";
@@ -223,52 +227,15 @@ function Inspector(props) {
 	// this useEffect is for setting the resOption attribute to desktop/tab/mobile depending on the added 'eb-res-option-' class only the first time once
 	useEffect(() => {
 		setAttributes({
-			resOption: wp.data
-				.select("core/edit-post")
-				.__experimentalGetPreviewDeviceType(),
+			resOption: select("core/edit-post").__experimentalGetPreviewDeviceType(),
 		});
 	}, []);
 
 	// this useEffect is for mimmiking css for all the eb blocks on resOption changing
 	useEffect(() => {
-		const allEbBlocksWrapper = document.querySelectorAll(
-			".eb-guten-block-main-parent-wrapper:not(.is-selected) > style"
-		);
-
-		// console.log("---inspector", { allEbBlocksWrapper });
-		if (allEbBlocksWrapper.length < 1) return;
-		allEbBlocksWrapper.forEach((styleTag) => {
-			const cssStrings = styleTag.textContent;
-			const minCss = cssStrings.replace(/\s+/g, " ");
-			// console.log({ minCss });
-			const regexCssMimmikSpace = /(?<=mimmikcssStart\s\*\/).+(?=\/\*\smimmikcssEnd)/i;
-			let newCssStrings = " ";
-			if (resOption === "Tablet") {
-				const tabCssStrings = (minCss.match(
-					/tabcssStart\s\*\/(.+)(?=\/\*\stabcssEnd)/i
-				) || [, " "])[1];
-				// console.log({ tabCssStrings });
-				newCssStrings = minCss.replace(regexCssMimmikSpace, tabCssStrings);
-			} else if (resOption === "Mobile") {
-				const tabCssStrings = (minCss.match(
-					/tabcssStart\s\*\/(.+)(?=\/\*\stabcssEnd)/i
-				) || [, " "])[1];
-
-				const mobCssStrings = (minCss.match(
-					// /(?<=mobcssStart\s\*\/).+(?=\/\*\smobcssEnd)/i
-					/mobcssStart\s\*\/(.+)(?=\/\*\smobcssEnd)/i
-				) || [, " "])[1];
-
-				// console.log({ tabCssStrings, mobCssStrings });
-
-				newCssStrings = minCss.replace(
-					regexCssMimmikSpace,
-					`${tabCssStrings} ${mobCssStrings}`
-				);
-			} else {
-				newCssStrings = minCss.replace(regexCssMimmikSpace, " ");
-			}
-			styleTag.textContent = newCssStrings;
+		mimmikCssForResBtns({
+			domObj: document,
+			resOption,
 		});
 	}, [resOption]);
 

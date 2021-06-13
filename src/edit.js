@@ -14,6 +14,8 @@ import "./editor.scss";
  * Internal dependencies
  */
 
+import { mimmikCssForPreviewBtnClick } from "../util/helpers";
+
 import {
 	softMinifyCssStrings,
 	isCssExists,
@@ -217,32 +219,9 @@ const Edit = ({ attributes, setAttributes, isSelected, clientId }) => {
 		// console.log({ blockId });
 	}, []);
 
-	//
-	// useEffect(() => {
-	// 	console.log("-----edit.js useEffect with [] dependency", wp);
-
-	// 	const bodyClasses = document.body.className;
-
-	// 	if (/eb\-mimmik\-added/i.test(bodyClasses)) return;
-
-	// 	document.body.classList.add("eb-mimmik-added");
-
-	// 	console.log("----'eb-mimmik-added' class added to body");
-
-	// 	const wpResBtnsWrap = document
-	// 		.getElementById("editor")
-	// 		.querySelector(".edit-post-layout + .popover-slot");
-
-	// 	console.log("---wpResBtnsWrap", wpResBtnsWrap);
-
-	// 	wpResBtnsWrap.addEventListener("click", (e) => {
-	// 		const btn = e.target;
-	// 		console.log("---from the eventlistener in edit.js", btn);
-	// 		if (/block\-editor\-post\-preview__button\-resize/i.test(btn.className)) {
-	// 			const resDevice = btn.querySelector("span").textContent;
-	// 		}
-	// 	});
-	// }, []);
+	useEffect(() => {
+		mimmikCssForPreviewBtnClick(document);
+	}, []);
 
 	const blockProps = useBlockProps({
 		className: `eb-guten-block-main-parent-wrapper`,
