@@ -220,7 +220,10 @@ const Edit = ({ attributes, setAttributes, isSelected, clientId }) => {
 	}, []);
 
 	useEffect(() => {
-		mimmikCssForPreviewBtnClick(document);
+		mimmikCssForPreviewBtnClick({
+			domObj: document,
+			select,
+		});
 	}, []);
 
 	const blockProps = useBlockProps({

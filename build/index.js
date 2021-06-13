@@ -4593,7 +4593,10 @@ var Edit = function Edit(_ref) {
     fixDuplicateBlockId(all_blocks); // console.log({ blockId });
   }, []);
   Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    Object(_util_helpers__WEBPACK_IMPORTED_MODULE_5__["mimmikCssForPreviewBtnClick"])(document);
+    Object(_util_helpers__WEBPACK_IMPORTED_MODULE_5__["mimmikCssForPreviewBtnClick"])({
+      domObj: document,
+      select: select
+    });
   }, []);
   var blockProps = Object(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__["useBlockProps"])({
     className: "eb-guten-block-main-parent-wrapper"
@@ -8794,27 +8797,20 @@ var mimmikCssForResBtns = function mimmikCssForResBtns(_ref21) {
   if (allEbBlocksWrapper.length < 1) return;
   allEbBlocksWrapper.forEach(function (styleTag) {
     var cssStrings = styleTag.textContent;
-    var minCss = cssStrings.replace(/\s+/g, " ");
-    console.log({
-      minCss: minCss
-    });
+    var minCss = cssStrings.replace(/\s+/g, " "); // console.log({ minCss });
+
     var regexCssMimmikSpace = /(mimmikcssStart\s\*\/)(.+)(\/\*\smimmikcssEnd)/i;
     var newCssStrings = " ";
 
     if (resOption === "Tablet") {
-      var tabCssStrings = (minCss.match(/tabcssStart\s\*\/(.+)(?=\/\*\stabcssEnd)/i) || [, " "])[1];
-      console.log({
-        tabCssStrings: tabCssStrings
-      });
+      var tabCssStrings = (minCss.match(/tabcssStart\s\*\/(.+)(?=\/\*\stabcssEnd)/i) || [, " "])[1]; // console.log({ tabCssStrings });
+
       newCssStrings = minCss.replace(regexCssMimmikSpace, "$1 ".concat(tabCssStrings, " $3"));
     } else if (resOption === "Mobile") {
       var _tabCssStrings = (minCss.match(/tabcssStart\s\*\/(.+)(?=\/\*\stabcssEnd)/i) || [, " "])[1];
       var mobCssStrings = (minCss.match( // /(?<=mobcssStart\s\*\/).+(?=\/\*\smobcssEnd)/i
-      /mobcssStart\s\*\/(.+)(?=\/\*\smobcssEnd)/i) || [, " "])[1];
-      console.log({
-        tabCssStrings: _tabCssStrings,
-        mobCssStrings: mobCssStrings
-      });
+      /mobcssStart\s\*\/(.+)(?=\/\*\smobcssEnd)/i) || [, " "])[1]; // console.log({ tabCssStrings, mobCssStrings });
+
       newCssStrings = minCss.replace(regexCssMimmikSpace, "$1 ".concat(_tabCssStrings, " ").concat(mobCssStrings, " $3"));
     } else {
       newCssStrings = minCss.replace(regexCssMimmikSpace, "$1  $3");
@@ -8826,41 +8822,25 @@ var mimmikCssForResBtns = function mimmikCssForResBtns(_ref21) {
 // IMPORTANT: The following fuction declaration must be below the 'mimmikCssForResBtns' function declaration
 // function to mimmik css when clicking the buttons in the 'Preview button of wordpress' located beside the 'update' button
 
-var mimmikCssForPreviewBtnClick = function mimmikCssForPreviewBtnClick(domObj) {
-  console.log("-----edit.js useEffect with [] dependency");
+var mimmikCssForPreviewBtnClick = function mimmikCssForPreviewBtnClick(_ref22) {
+  var domObj = _ref22.domObj,
+      select = _ref22.select;
   var bodyClasses = domObj.body.className;
   if (/eb\-mimmik\-added/i.test(bodyClasses)) return;
   domObj.body.classList.add("eb-mimmik-added");
-  console.log("----'eb-mimmik-added' class added to body");
   var wpResBtnsWrap = domObj.querySelector("#editor .edit-post-layout + .popover-slot");
-  console.log("---wpResBtnsWrap", wpResBtnsWrap);
   wpResBtnsWrap.addEventListener("click", function (e) {
-    var btn = e.target;
-    console.log("---------------------------target: ", e.target, "---currentTarget: ", e.currentTarget);
+    if (/block\-editor\-post\-preview__button\-resize|components\-menu\-item__item/i.test(e.target.className)) {
+      setTimeout(function () {
+        var resOption = select("core/edit-post").__experimentalGetPreviewDeviceType(); // console.log("---resoption from setTimeout", { resOption });
 
-    if (/block\-editor\-post\-preview__button\-resize/i.test(btn.className)) {
-      var resOption = (btn.querySelector(".components-menu-item__item").textContent || " ").trim();
-      console.log("--queryied span", {
-        resOption: resOption
-      });
-      mimmikCssForResBtns({
-        isForPreviewButton: true,
-        domObj: domObj,
-        resOption: resOption
-      });
-    } else if (/components\-menu\-item__item/i.test(btn.className)) {
-      var _resOption = (btn.textContent || " ").trim();
 
-      console.log("--clicked span", {
-        resOption: _resOption
-      });
-      mimmikCssForResBtns({
-        isForPreviewButton: true,
-        domObj: domObj,
-        resOption: _resOption
-      });
-    } else {
-      console.log("--something else clicked");
+        mimmikCssForResBtns({
+          isForPreviewButton: true,
+          domObj: domObj,
+          resOption: resOption
+        });
+      }, 0);
     }
   });
 };
