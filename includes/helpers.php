@@ -37,15 +37,15 @@ class Infobox_Helper
     public function enqueues($hook)
     {
         /**
-         * Only for Admin Add/Edit Pages 
+         * Only for Admin Add/Edit Pages
          */
         if ($hook == 'post-new.php' || $hook == 'post.php' || $hook == 'site-editor.php' || ($hook == 'themes.php' && !empty($_SERVER['QUERY_STRING']) && str_contains($_SERVER['QUERY_STRING'], 'gutenberg-edit-site'))) {
 
-            $controls_dependencies = require INFOBOX_ADMIN_PATH . '/dist/controls.asset.php';
+            $controls_dependencies = require INFOBOX_ADMIN_PATH . '/dist/modules.asset.php';
 
             wp_register_script(
                 "infobox-controls-util",
-                INFOBOX_ADMIN_URL . 'dist/controls.js',
+                INFOBOX_ADMIN_URL . 'dist/modules.js',
                 array_merge($controls_dependencies['dependencies']),
                 $controls_dependencies['version'],
                 true
@@ -68,7 +68,7 @@ class Infobox_Helper
 
             wp_register_style(
                 'infobox-editor-css',
-                INFOBOX_ADMIN_URL . 'dist/controls.css',
+                INFOBOX_ADMIN_URL . 'dist/modules.css',
                 array(
                     'fontpicker-default-theme',
                     'fontpicker-matetial-theme',
