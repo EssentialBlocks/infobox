@@ -66,13 +66,20 @@ class Infobox_Helper
                 ));
             }
 
+			wp_register_style(
+				'essential-blocks-iconpicker-css',
+				INFOBOX_ADMIN_URL . 'dist/style-modules.css',
+				[],
+				INFOBOX_VERSION,
+				'all'
+			);
+
             wp_register_style(
                 'infobox-editor-css',
                 INFOBOX_ADMIN_URL . 'dist/modules.css',
                 array(
-                    'fontpicker-default-theme',
-                    'fontpicker-matetial-theme',
                     'create-block-infobox-block-css',
+					'essential-blocks-iconpicker-css'
                 ),
                 $controls_dependencies['version'],
                 'all'
