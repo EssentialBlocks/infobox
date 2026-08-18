@@ -21,25 +21,28 @@ jobs:
         with:
             submodules: recursive
             token: ${{ secrets.EB_PAT }}
-      # Node version.
+      # Node version. Keep in sync with .nvmrc and package.json engines.
       #
-      # TECHNICAL DEBT - do not bump this in isolation.
+      # Must stay >= 20.19. Two independent floors require it:
       #
-      # Node 14 reached end of life on 2023-04-30. It is pinned here on purpose:
-      # the `controls` submodule cannot resolve its dependency tree on npm 7+.
-      # `react-sortable-hoc@2.0.0` caps React at ^16 || ^17 while the
-      # @wordpress/* packages require React 18, so a modern npm fails with
-      # ERESOLVE, and `--legacy-peer-deps` then fails at build time with
-      # `Cannot find module 'ajv/dist/compile/codegen'`. Only npm 6 (bundled
-      # with Node 14) installs it, so Node 14 is currently load-bearing.
+      #   1. webpack >= 5.108.0 emits a literal `Object.hasOwn(...)` into
+      #      generated runtime code, because wp-scripts builds with
+      #      `target: 'browserslist'` and every browser in the WordPress
+      #      browserslist supports it. mini-css-extract-plugin then EXECUTES
+      #      that generated module in the build process, so the build host
+      #      needs it too. `Object.hasOwn` landed in Node 16.9.0, so Node 14
+      #      failed here with:
+      #        Error: Execution of module code from module graph failed:
+      #        Object.hasOwn is not a function
+      #   2. The locked sass release declares `engines.node >= 20.19.0`.
       #
-      # The root build itself is fine on modern Node - it has been verified on
-      # Node 20 and produces a byte-identical dist/index.js. Node here can only
-      # be raised together with the controls dependency migration
-      # (react-sortable-hoc -> @dnd-kit). See README.md, "Node version".
+      # Note: the `controls` submodule still needs npm 6 to install, but CI
+      # never builds it - this job runs only the root build, whose webpack
+      # entry is ./src/index.js and which does not import controls. That
+      # constraint applies to local controls builds only, not to this job.
       - uses: actions/setup-node@v7
         with:
-          node-version: '14'
+          node-version: '22'
       # Runs a single command using the runners shell
       # - name: Git Submodule Cloning
       #   run: git submodule update --init --recursive

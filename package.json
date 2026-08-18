@@ -5,8 +5,8 @@
 	"author": "WPDeveloper",
 	"license": "GPL-3.0-or-later",
 	"engines": {
-		"node": ">=14",
-		"npm": ">=6"
+		"node": ">=22",
+		"npm": ">=10"
 	},
 	"scripts": {
 		"build": "wp-scripts build",
