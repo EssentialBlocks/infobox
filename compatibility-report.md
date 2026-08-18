@@ -1,7 +1,7 @@
 # Infobox — PHP / WordPress Compatibility Report
 
 - **Plugin:** Infobox (`infobox`) — WPDeveloper
-- **Version:** 1.2.6 → **1.5.0**
+- **Version:** 1.2.6 → **1.3.0**
 - **Branch:** `infobox-dev` (branched from `latest`, uncommitted)
 - **Date of pass:** 2026-08-09
 
@@ -113,7 +113,7 @@ Mapped 1:1 to the table above.
 | 13 | `self::$instances == null` → `null === self::$instances`. |
 | 14 | `private static $block_name = [];` → `= '';`. |
 | — | `create_block_infobox_block_init()` wrapped in `if ( ! function_exists( … ) ):` / `endif;` to remove the fatal-redeclare risk from an unprefixed global function name. |
-| — | Version bumped **1.2.6 → 1.5.0** (minor, chosen by the maintainer) and kept in sync across `infobox.php` header, `INFOBOX_VERSION`, `readme.txt` `Stable tag`, and `package.json`. Changelog entry added. |
+| — | Version bumped **1.2.6 → 1.3.0** (minor, chosen by the maintainer) and kept in sync across `infobox.php` header, `INFOBOX_VERSION`, `readme.txt` `Stable tag`, and `package.json`. Changelog entry added. |
 
 **No feature, UI, markup, option name, hook name, block attribute, or saved-data change.** `dist/` was not rebuilt; `src/` was not touched.
 
@@ -210,9 +210,9 @@ The one genuine tension was §5.4, the declared floor sitting below what current
 | Requires PHP | 7.4 | 7.4 |
 | Requires at least | 6.0 | 6.0 |
 | Tested up to | 7.0 | 7.0 |
-| Version / Stable tag | 1.5.0 | 1.5.0 |
+| Version / Stable tag | 1.3.0 | 1.3.0 |
 
-`package.json` `version` and `INFOBOX_VERSION` also at `1.5.0`.
+`package.json` `version` and `INFOBOX_VERSION` also at `1.3.0`.
 
 ---
 

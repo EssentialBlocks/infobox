@@ -17,12 +17,27 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
         with:
             submodules: recursive
             token: ${{ secrets.EB_PAT }}
-      # node version
-      - uses: actions/setup-node@v2
+      # Node version.
+      #
+      # TECHNICAL DEBT - do not bump this in isolation.
+      #
+      # Node 14 reached end of life on 2023-04-30. It is pinned here on purpose:
+      # the `controls` submodule cannot resolve its dependency tree on npm 7+.
+      # `react-sortable-hoc@2.0.0` caps React at ^16 || ^17 while the
+      # @wordpress/* packages require React 18, so a modern npm fails with
+      # ERESOLVE, and `--legacy-peer-deps` then fails at build time with
+      # `Cannot find module 'ajv/dist/compile/codegen'`. Only npm 6 (bundled
+      # with Node 14) installs it, so Node 14 is currently load-bearing.
+      #
+      # The root build itself is fine on modern Node - it has been verified on
+      # Node 20 and produces a byte-identical dist/index.js. Node here can only
+      # be raised together with the controls dependency migration
+      # (react-sortable-hoc -> @dnd-kit). See README.md, "Node version".
+      - uses: actions/setup-node@v7
         with:
           node-version: '14'
       # Runs a single command using the runners shell
@@ -32,11 +47,11 @@ jobs:
         #   GITHUB_TOKEN: ${{ secrets.TOKEN }}
       - name: Running NPM Install & Build
         run: |
-          npm install
+          npm ci
           npm run build
       - name: WordPress Plugin Deploy
         id: deploy
-        uses: 10up/action-wordpress-plugin-deploy@stable
+        uses: 10up/action-wordpress-plugin-deploy@2.3.0
         env:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}

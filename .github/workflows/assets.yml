@@ -3,9 +3,14 @@ name: Deploy Assets to WordPress.org
 
 # Controls when the action will run.
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
+  # Triggers on pushes to master, the branch that represents released code.
+  # Uploads .wordpress-org/ (banner + icon images) and readme.txt to wp.org.
+  #
+  # This previously pointed at `release/assets`, a branch that has never existed
+  # in this repository, so the workflow could never fire. The working version of
+  # this pipeline lived on the old `trunk` branch (kept as tag `backup/trunk`).
   push:
-    branches: [ release/assets ]
+    branches: [ master ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -17,11 +22,11 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v7
 
       # Runs a single command using the runners shell
       - name: WordPress.org plugin asset/readme update
-        uses: 10up/action-wordpress-plugin-asset-update@stable
+        uses: 10up/action-wordpress-plugin-asset-update@2.2.0
         env:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}

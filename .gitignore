@@ -31,5 +31,6 @@ node_modules/
 #ide
 .idea
 
-package-lock.json
+# package-lock.json is intentionally COMMITTED - CI runs `npm ci` against it
+# so release builds are reproducible. Do not add it back here.
 yarn.lock

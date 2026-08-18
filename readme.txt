@@ -1,10 +1,10 @@
 === Infobox ===
-Contributors: wpdevteam, re_enter_rupok, Asif2BD, rahat89, hztyfoon, fencermonir, sumaiyasiddika
+Contributors: wpdevteam, re_enter_rupok, Asif2BD, rahat89, RahatSheikhLeon
 Tags: block, blocks, infobox, info box, icon box, gutenberg, gutenberg blocks
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.5.0
+Stable tag: 1.3.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -82,12 +82,13 @@ Yes, it will work with any standard WordPress theme.
 
 == Changelog ==
 
-= 1.5.0 - 09/08/2026 =
-* Fixed: Fatal error on load when the `style-handler` submodule was not initialised
-* Fixed: Fatal error on PHP below 8.0 when opening the Site Editor via the Gutenberg plugin
-* Fixed: WordPress version detection using a float cast, which misreads future x.10 releases
-* Improved: Compatibility with PHP 7.4 through 8.5 and WordPress 6.0 through 7.0
-* Changed: Minimum requirements raised to WordPress 6.0 and PHP 7.4
+= 1.3.0 - 18/08/2026 =
+* Fixed: PHP 8.0–8.5 compatibility issues
+* Fixed: WordPress version detection
+* Fixed: PHP 7.x compatibility
+* Fixed: Asset loading issues on newer WordPress versions
+* Improved: Asset loading and overall stability
+* Tested up to WordPress 7.0.4
 
 = 1.2.6 - 15/04/2024 =
 * Fixed: compatibility support with wordpress 6.5 version
