@@ -1,53 +1,123 @@
-# A set of files you probably don't want in your WordPress.org distribution
-.babelrc
-.deployignore
-.distignore
-.editorconfig
-.eslintignore
-.eslintrc
+# Files and folders that must NOT ship in the production zip.
+#
+# Consumed by `wp dist-archive` (local builds) and by
+# 10up/action-wordpress-plugin-deploy (.github/workflows/deploy.yml).
+#
+# KEEP IN THE ZIP — do not add these: infobox.php, readme.txt, block.json,
+# includes/, assets/, lib/ (style-handler), and dist/*.js / *.css / *.asset.php.
+# The plugin loads those at runtime; excluding dist/ ships a dead plugin.
+#
+# GOTCHA: `wp dist-archive` shells out to `zip -r`, which UPDATES an existing
+# archive rather than replacing it. After tightening anything below, delete the
+# old zip first or the newly excluded files stay in it and the size never drops.
+
+# Version control
 .git
 .gitignore
-.github
 .gitattributes
+.gitmodules
+.github
 .gitlab-ci.yml
+
+# CI / deployment
 .travis.yml
-.DS_Store
-Thumbs.db
-behat.yml
 bitbucket-pipelines.yml
-bin
 .circleci/config.yml
-composer.json
-composer.lock
 dependencies.yml
+wp-cli.local.yml
+.deployignore
+.distignore
+.wordpress-org
+
+# Build tooling & source
+src
+util
+config
+controls
+webpack.config.js
 Gruntfile.js
+gulpfile.js
+bin
+
+# Node / package managers
+node_modules
 package.json
 package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.npmrc
+.nvmrc
+
+# Babel
+.babelrc
+.babelrc.js
+.babelrc.json
+babel.config.js
+babel.config.cjs
+babel.config.mjs
+babel.config.json
+
+# Linting & formatting
+.eslintrc
+.eslintrc.js
+.eslintrc.json
+.eslintignore
+.prettierrc
+.prettierrc.js
+.prettierrc.json
+.prettierignore
+.stylelintrc
+.stylelintrc.json
+.stylelintignore
+.phpcs.xml
+.phpcs.xml.dist
+phpcs.xml
+phpcs.xml.dist
+
+# Composer
+composer.json
+composer.lock
+vendor
+
+# Tests
+tests
 phpunit.xml
 phpunit.xml.dist
 multisite.xml
 multisite.xml.dist
-.phpcs.xml
-phpcs.xml
-.phpcs.xml.dist
-phpcs.xml.dist
+behat.yml
+
+# Editor / OS cruft
+.editorconfig
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Source maps — 3.8 MB of debug-only data, not needed by end users
+*.map
+
+# Orphaned FontAwesome 4 webfonts. Nothing references these — the plugin ships
+# font-awesome5.css, which only points at fa-solid / fa-regular / fa-brands.
+assets/fonts/fontawesome-webfont.*
+assets/fonts/FontAwesome.otf
+
+# Dead webfont formats for the FA5 faces. Both sit last in the @font-face
+# `src:` list, so no browser that supports woff2/woff/ttf ever requests them.
+#   .svg — dropped by Chrome 38 (2014), never in Firefox/IE/Edge
+#   .eot — Internet Explorer only; IE reached end of life in June 2022
+# NOTE: fontIconPicker.* is deliberately NOT listed here. That face ships no
+# woff2, so its .svg and .ttf are its only fallbacks and must stay.
+assets/fonts/fa-solid-900.svg
+assets/fonts/fa-regular-400.svg
+assets/fonts/fa-brands-400.svg
+assets/fonts/fa-solid-900.eot
+assets/fonts/fa-regular-400.eot
+assets/fonts/fa-brands-400.eot
+
+# Internal docs & archives
 README.md
-webpack.config.js
-wp-cli.local.yml
-yarn.lock
-tests
-vendor
-node_modules
+compatibility-report.md
 *.sql
 *.tar.gz
 *.zip
-gulpfile.js
-.git
-node_modules/**/*.*
-dist/**/*.*
-**/*.zip
-src
-util
-/controls/
-.wordpress-org
-.gitmodules

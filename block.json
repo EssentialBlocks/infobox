@@ -8,6 +8,5 @@
 		"html": false,
 		"align": ["wide", "full"]
 	},
-	"textdomain": "infobox",
-	"editorScript": "file:./dist/index.js"
+	"textdomain": "infobox"
 }

@@ -1,13 +1,12 @@
 import { RichText } from "@wordpress/block-editor";
-const { EBDisplayIcon } = window.EBInfoboxControls;
-export default function InfoboxContainer({ requiredProps }) {
+
+export default function InfoboxContainer3({ requiredProps }) {
     const {
         blockId,
-        infoboxIcon,
+        selectedIcon,
         media,
         number,
         imageUrl,
-        imageAlt,
         infoboxLink,
         linkNewTab,
         enableSubTitle,
@@ -31,7 +30,10 @@ export default function InfoboxContainer({ requiredProps }) {
                     {media === "icon" ? (
                         <div className="icon-img-wrapper">
                             <div className="eb-icon number-or-icon">
-                                <EBDisplayIcon icon={infoboxIcon} className={`eb-infobox-icon-data-selector`} />
+                                <span
+                                    data-icon={selectedIcon}
+                                    className={`eb-infobox-icon-data-selector  ${selectedIcon}`}
+                                ></span>
                             </div>
                         </div>
                     ) : null}
@@ -52,7 +54,7 @@ export default function InfoboxContainer({ requiredProps }) {
                                 <img
                                     className="eb-infobox-image"
                                     src={imageUrl}
-                                    alt={imageAlt}
+                                    alt="macbook"
                                 />
                             </div>
                         </div>
@@ -87,8 +89,9 @@ export default function InfoboxContainer({ requiredProps }) {
                                     href={infoboxLink}
                                     target={linkNewTab ? "_blank" : "_self"}
                                     rel="noopener noreferrer"
-                                    className={`infobox-btn  ${btnEffect || " "
-                                        }`}
+                                    className={`infobox-btn  ${
+                                        btnEffect || " "
+                                    }`}
                                 >
                                     {buttonText}
                                 </a>

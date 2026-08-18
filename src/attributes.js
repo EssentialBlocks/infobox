@@ -85,7 +85,7 @@ const attributes = {
 	//
 	numIconBgType: {
 		type: "string",
-		default: "gradient",
+		default: "fill",
 	},
 
 	//
@@ -110,6 +110,10 @@ const attributes = {
 
 	//
 	imageId: {
+		type: "string",
+	},
+
+	imageAlt: {
 		type: "string",
 	},
 
@@ -148,7 +152,7 @@ const attributes = {
 		type: "number",
 	},
 
-	//
+	// cant delete it as we migrate it to infoboxIcon attribute
 	selectedIcon: {
 		type: "string",
 		source: "attribute",
@@ -156,6 +160,10 @@ const attributes = {
 		attribute: "data-icon",
 		default: "far fa-gem",
 		// default: "far fa-sun",
+	},
+	infoboxIcon: {
+		type: "string",
+		default: "far fa-gem",
 	},
 
 	//
@@ -440,11 +448,9 @@ const attributes = {
 		defaultFillColor: "#E1D8FF",
 		defaultBgGradient:
 			"linear-gradient(45deg, rgba(120,102,255,0.8) 0% , rgba(195,120,242,0.4) 100%)",
-		forButton: true,
-		// noOverlay: true,
-		// noMainBgi: true,
-		// noOverlayBgi: true, // if 'noOverlay : true' is given then there's no need to give 'noOverlayBgi : true'
-		// isBgDefaultGradient: true,
+
+		// defaultHovFillColor: "var(--eb-global-secondary-color)",
+		forButton: true
 	}),
 };
 

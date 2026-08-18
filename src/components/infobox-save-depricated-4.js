@@ -1,8 +1,10 @@
 import { RichText } from "@wordpress/block-editor";
 const { EBDisplayIcon } = window.EBInfoboxControls;
-export default function InfoboxContainer({ requiredProps }) {
+
+export default function InfoboxContainer4({ requiredProps }) {
     const {
         blockId,
+        selectedIcon,
         infoboxIcon,
         media,
         number,
@@ -39,9 +41,7 @@ export default function InfoboxContainer({ requiredProps }) {
                     {media === "number" ? (
                         <div className="icon-img-wrapper">
                             <div className="eb-infobox-num-wrapper number-or-icon">
-                                <span className="eb-infobox-number">
-                                    {number}
-                                </span>
+                                <span className="eb-infobox-number">{number}</span>
                             </div>
                         </div>
                     ) : null}
@@ -49,36 +49,20 @@ export default function InfoboxContainer({ requiredProps }) {
                     {media === "image" ? (
                         <div className="icon-img-wrapper">
                             <div className="eb-infobox-image-wrapper">
-                                <img
-                                    className="eb-infobox-image"
-                                    src={imageUrl}
-                                    alt={imageAlt}
-                                />
+                                <img className="eb-infobox-image" src={imageUrl} alt={imageAlt} />
                             </div>
                         </div>
                     ) : null}
 
                     <div className="contents-wrapper">
-                        <RichText.Content
-                            tagName={titleTag}
-                            className="title"
-                            value={title}
-                        />
+                        <RichText.Content tagName={titleTag} className="title" value={title} />
 
                         {enableSubTitle ? (
-                            <RichText.Content
-                                tagName={subTitleTag}
-                                className="subtitle"
-                                value={subTitle}
-                            />
+                            <RichText.Content tagName={subTitleTag} className="subtitle" value={subTitle} />
                         ) : null}
 
                         {enableDescription ? (
-                            <RichText.Content
-                                tagName="p"
-                                className="description"
-                                value={description}
-                            />
+                            <RichText.Content tagName="p" className="description" value={description} />
                         ) : null}
 
                         {enableButton && !isInfoClick ? (
@@ -87,8 +71,7 @@ export default function InfoboxContainer({ requiredProps }) {
                                     href={infoboxLink}
                                     target={linkNewTab ? "_blank" : "_self"}
                                     rel="noopener noreferrer"
-                                    className={`infobox-btn  ${btnEffect || " "
-                                        }`}
+                                    className={`infobox-btn  ${btnEffect || " "}`}
                                 >
                                     {buttonText}
                                 </a>
