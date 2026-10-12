@@ -33,8 +33,9 @@ const {
     faIcons,
     AdvancedControls,
     DynamicInputControl,
-    EBIconPicker
 } = window.EBInfoboxControls;
+
+import InfoboxIconPicker from "./components/icon-picker";
 
 import {
     typoPrefix_title,
@@ -42,6 +43,7 @@ import {
     typoPrefix_number,
     typoPrefix_subTitle,
     typoPrefix_buttonText,
+    typoPrefix_caption,
 } from "./constants/typographyPrefixConstants";
 
 import {
@@ -67,6 +69,7 @@ import {
 import {
     LAYOUT_TYPES,
     MEDIA_TYPES,
+    CAPTION_PRESETS,
     ICON_IMAGE_BG_TYPES,
     sizeUnitTypes,
     HEADER_TAGS,
@@ -101,6 +104,14 @@ function Inspector(props) {
         //
         imageUrl,
         imageAlt,
+        useFigureTag,
+        displayCaption,
+        imageCaption,
+        captionColor,
+        captionPreset,
+        captionBgColor,
+        enableImageLink,
+        imageLink,
 
         //
         infoboxIcon,
@@ -319,6 +330,221 @@ function Inspector(props) {
                                                     })
                                                 }
                                             />
+                                        )}
+                                    </PanelBody>
+
+                                    <PanelBody
+                                        title={__("Media", "essential-blocks")}
+                                    >
+                                        <BaseControl id="eb-infobox-image-icon">
+                                            <ButtonGroup id="eb-infobox-image-icon">
+                                                {MEDIA_TYPES.map(
+                                                    (
+                                                        { label, value },
+                                                        index
+                                                    ) => (
+                                                        <Button
+                                                            key={index}
+                                                            isSecondary={
+                                                                media !== value
+                                                            }
+                                                            isPrimary={
+                                                                media === value
+                                                            }
+                                                            onClick={() =>
+                                                                setAttributes({
+                                                                    media: value,
+                                                                })
+                                                            }
+                                                        >
+                                                            {label}
+                                                        </Button>
+                                                    )
+                                                )}
+                                            </ButtonGroup>
+                                        </BaseControl>
+
+                                        {media === "icon" && (
+                                            <InfoboxIconPicker
+                                                label={__(
+                                                    "Icon",
+                                                    "essential-blocks"
+                                                )}
+                                                value={infoboxIcon}
+                                                onChange={(icon) =>
+                                                    setAttributes({
+                                                        infoboxIcon: icon,
+                                                    })
+                                                }
+                                            />
+                                        )}
+
+                                        {media === "number" && (
+                                            <BaseControl
+                                                label={__(
+                                                    "Text",
+                                                    "essential-blocks"
+                                                )}
+                                                id="eb-infobox-number-id"
+                                            >
+                                                <input
+                                                    type="text"
+                                                    value={`${number}`}
+                                                    id="eb-infobox-number-id"
+                                                    onChange={(e) =>
+                                                        setAttributes({
+                                                            number: `${e.target.value}`,
+                                                        })
+                                                    }
+                                                />
+                                            </BaseControl>
+                                        )}
+
+                                        {media === "image" && !imageUrl && (
+                                            <MediaUpload
+                                                onSelect={({ id, url, alt }) =>
+                                                    setAttributes({
+                                                        imageUrl: url,
+                                                        imageId: id,
+                                                        imageAlt: alt,
+                                                    })
+                                                }
+                                                type="image"
+                                                value={imageId}
+                                                render={({ open }) => {
+                                                    return (
+                                                        <Button
+                                                            className="eb-background-control-inspector-panel-img-btn components-button"
+                                                            label={__(
+                                                                "Upload Image",
+                                                                "essential-blocks"
+                                                            )}
+                                                            icon="format-image"
+                                                            onClick={open}
+                                                        />
+                                                    );
+                                                }}
+                                            />
+                                        )}
+
+                                        {media === "image" && imageUrl && (
+                                            <ImageAvatar
+                                                imageUrl={imageUrl}
+                                                onDeleteImage={() =>
+                                                    setAttributes({
+                                                        imageUrl: null,
+                                                    })
+                                                }
+                                            />
+                                        )}
+
+                                        {media === "image" && (
+                                            <>
+                                                <ToggleControl
+                                                    label={__(
+                                                        "Use Figure Tag",
+                                                        "essential-blocks"
+                                                    )}
+                                                    checked={useFigureTag}
+                                                    onChange={() =>
+                                                        setAttributes({
+                                                            useFigureTag: !useFigureTag,
+                                                        })
+                                                    }
+                                                />
+
+                                                <ToggleControl
+                                                    label={__(
+                                                        "Display Caption",
+                                                        "essential-blocks"
+                                                    )}
+                                                    checked={displayCaption}
+                                                    onChange={() =>
+                                                        setAttributes({
+                                                            displayCaption: !displayCaption,
+                                                        })
+                                                    }
+                                                />
+                                                {displayCaption && (
+                                                    <>
+                                                        <TextControl
+                                                            label={__(
+                                                                "Caption",
+                                                                "essential-blocks"
+                                                            )}
+                                                            value={imageCaption}
+                                                            onChange={(imageCaption) =>
+                                                                setAttributes({
+                                                                    imageCaption,
+                                                                })
+                                                            }
+                                                        />
+                                                        <BaseControl
+                                                            label={__(
+                                                                "Caption Preset",
+                                                                "essential-blocks"
+                                                            )}
+                                                            id="eb-infobox-caption-preset"
+                                                        >
+                                                            <ButtonGroup id="eb-infobox-caption-preset">
+                                                                {CAPTION_PRESETS.map(
+                                                                    ({ label, value }) => (
+                                                                        <Button
+                                                                            key={value}
+                                                                            isSecondary={
+                                                                                captionPreset !==
+                                                                                value
+                                                                            }
+                                                                            isPrimary={
+                                                                                captionPreset ===
+                                                                                value
+                                                                            }
+                                                                            onClick={() =>
+                                                                                setAttributes({
+                                                                                    captionPreset: value,
+                                                                                })
+                                                                            }
+                                                                        >
+                                                                            {label}
+                                                                        </Button>
+                                                                    )
+                                                                )}
+                                                            </ButtonGroup>
+                                                        </BaseControl>
+                                                    </>
+                                                )}
+
+                                                {/* The whole infobox is already a link when "Clickable Infobox" is on */}
+                                                {!isInfoClick && (
+                                                    <ToggleControl
+                                                        label={__(
+                                                            "Enable Link?",
+                                                            "essential-blocks"
+                                                        )}
+                                                        checked={enableImageLink}
+                                                        onChange={() =>
+                                                            setAttributes({
+                                                                enableImageLink: !enableImageLink,
+                                                            })
+                                                        }
+                                                    />
+                                                )}
+                                                {!isInfoClick && enableImageLink && (
+                                                    <TextControl
+                                                        label={__(
+                                                            "Link",
+                                                            "essential-blocks"
+                                                        )}
+                                                        placeholder="https://your-link.com"
+                                                        value={imageLink}
+                                                        onChange={(imageLink) =>
+                                                            setAttributes({
+                                                                imageLink,
+                                                            })
+                                                        }
+                                                    />
+                                                )}
+                                            </>
                                         )}
                                     </PanelBody>
 
@@ -543,50 +769,11 @@ function Inspector(props) {
                             )}
                             {tab.name === "styles" && (
                                 <>
+                                    {media !== "none" && (
                                     <PanelBody
                                         title={__("Media", "essential-blocks")}
                                     >
-                                        <BaseControl id="eb-infobox-image-icon">
-                                            <ButtonGroup id="eb-infobox-image-icon">
-                                                {MEDIA_TYPES.map(
-                                                    (
-                                                        { label, value },
-                                                        index
-                                                    ) => (
-                                                        <Button
-                                                            key={index}
-                                                            isSecondary={
-                                                                media !== value
-                                                            }
-                                                            isPrimary={
-                                                                media === value
-                                                            }
-                                                            onClick={() =>
-                                                                setAttributes({
-                                                                    media: value,
-                                                                })
-                                                            }
-                                                        >
-                                                            {label}
-                                                        </Button>
-                                                    )
-                                                )}
-                                            </ButtonGroup>
-                                        </BaseControl>
-
-                                        {media !== "none" && (
                                             <>
-                                                {media === "icon" && (
-                                                    <EBIconPicker
-                                                        value={infoboxIcon}
-                                                        onChange={(icon) =>
-                                                            setAttributes({
-                                                                infoboxIcon: icon,
-                                                            })
-                                                        }
-                                                    />
-                                                )}
-
                                                 {media === "icon" &&
                                                     infoboxIcon && (
                                                         <ResponsiveRangeController
@@ -607,38 +794,15 @@ function Inspector(props) {
                                                     )}
 
                                                 {media === "number" && (
-                                                    <>
-                                                        <BaseControl
-                                                            label={__(
-                                                                "Text",
-                                                                "essential-blocks"
-                                                            )}
-                                                            id="eb-infobox-number-id"
-                                                        >
-                                                            <input
-                                                                type="text"
-                                                                value={`${number}`}
-                                                                id="eb-infobox-number-id"
-                                                                onChange={(e) =>
-                                                                    setAttributes(
-                                                                        {
-                                                                            number: `${e.target.value}`,
-                                                                        }
-                                                                    )
-                                                                }
-                                                            />
-                                                        </BaseControl>
-
-                                                        <TypographyDropdown
-                                                            baseLabel="Text Typography"
-                                                            typographyPrefixConstant={
-                                                                typoPrefix_number
-                                                            }
-                                                            resRequiredProps={
-                                                                resRequiredProps
-                                                            }
-                                                        />
-                                                    </>
+                                                    <TypographyDropdown
+                                                        baseLabel="Text Typography"
+                                                        typographyPrefixConstant={
+                                                            typoPrefix_number
+                                                        }
+                                                        resRequiredProps={
+                                                            resRequiredProps
+                                                        }
+                                                    />
                                                 )}
 
                                                 {(media === "number" ||
@@ -782,52 +946,8 @@ function Inspector(props) {
                                                         </>
                                                     )}
 
-                                                {media === "image" &&
-                                                    !imageUrl && (
-                                                        <MediaUpload
-                                                            onSelect={({
-                                                                id,
-                                                                url,
-                                                                alt,
-                                                            }) =>
-                                                                setAttributes({
-                                                                    imageUrl: url,
-                                                                    imageId: id,
-                                                                    imageAlt: alt,
-                                                                })
-                                                            }
-                                                            type="image"
-                                                            value={imageId}
-                                                            render={({
-                                                                open,
-                                                            }) => {
-                                                                return (
-                                                                    <Button
-                                                                        className="eb-background-control-inspector-panel-img-btn components-button"
-                                                                        label={__(
-                                                                            "Upload Image",
-                                                                            "essential-blocks"
-                                                                        )}
-                                                                        icon="format-image"
-                                                                        onClick={
-                                                                            open
-                                                                        }
-                                                                    />
-                                                                );
-                                                            }}
-                                                        />
-                                                    )}
-
                                                 {media === "image" && imageUrl && (
                                                     <>
-                                                        <ImageAvatar
-                                                            imageUrl={imageUrl}
-                                                            onDeleteImage={() =>
-                                                                setAttributes({
-                                                                    imageUrl: null,
-                                                                })
-                                                            }
-                                                        />
                                                         <ResponsiveRangeController
                                                             baseLabel={__(
                                                                 "Image Width",
@@ -886,6 +1006,51 @@ function Inspector(props) {
                                                     </>
                                                 )}
 
+                                                {media === "image" &&
+                                                    displayCaption &&
+                                                    imageCaption && (
+                                                        <>
+                                                            <TypographyDropdown
+                                                                baseLabel={__(
+                                                                    "Caption Typography",
+                                                                    "essential-blocks"
+                                                                )}
+                                                                typographyPrefixConstant={
+                                                                    typoPrefix_caption
+                                                                }
+                                                                resRequiredProps={
+                                                                    resRequiredProps
+                                                                }
+                                                            />
+                                                            <ColorControl
+                                                                label={__(
+                                                                    "Caption Color",
+                                                                    "essential-blocks"
+                                                                )}
+                                                                color={captionColor}
+                                                                onChange={(captionColor) =>
+                                                                    setAttributes({
+                                                                        captionColor,
+                                                                    })
+                                                                }
+                                                            />
+                                                            {captionPreset === "card" && (
+                                                                <ColorControl
+                                                                    label={__(
+                                                                        "Caption Background",
+                                                                        "essential-blocks"
+                                                                    )}
+                                                                    color={captionBgColor}
+                                                                    onChange={(captionBgColor) =>
+                                                                        setAttributes({
+                                                                            captionBgColor,
+                                                                        })
+                                                                    }
+                                                                />
+                                                            )}
+                                                        </>
+                                                    )}
+
                                                 <Divider />
 
                                                 {media !== "none" && (
@@ -926,8 +1091,8 @@ function Inspector(props) {
                                                     baseLabel="Margin"
                                                 />
                                             </>
-                                        )}
                                     </PanelBody>
+                                    )}
 
                                     <PanelBody
                                         title={__("Title", "essential-blocks")}

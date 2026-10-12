@@ -5,6 +5,72 @@
  * Replace them with your own styles or remove the file completely.
  */
 
+@import "./components/icon-picker";
+
+.eb-infobox-wrapper img.eb-infobox-svg-icon {
+	object-fit: contain;
+}
+
+.eb-infobox-wrapper {
+	figure.eb-infobox-image-wrapper {
+		margin: 0;
+	}
+
+	.eb-infobox-image-link {
+		display: block;
+	}
+
+	.eb-infobox-image-caption {
+		margin-top: 8px;
+		font-size: 14px;
+		text-align: center;
+	}
+
+}
+
+// Caption presets. Done in CSS so the saved markup order never changes.
+// The `div.eb-infobox-wrapper .eb-infobox-image-wrapper` prefix is needed to
+// beat the wrapper's own `display: flex` (a row) further down this file.
+div.eb-infobox-wrapper .eb-infobox-image-wrapper {
+	&.eb-infobox-caption-below,
+	&.eb-infobox-caption-above,
+	&.eb-infobox-caption-card {
+		flex-direction: column;
+		align-items: center;
+	}
+
+	&.eb-infobox-caption-above {
+		flex-direction: column-reverse;
+
+		.eb-infobox-image-caption {
+			margin: 0 0 8px;
+		}
+	}
+
+	// Caption attached to the bottom of the image, as wide as the image
+	&.eb-infobox-caption-card {
+		align-items: stretch;
+		width: min-content;
+		max-width: 100%;
+
+		img {
+			display: block;
+		}
+
+		.eb-infobox-image-caption {
+			margin: 0;
+			padding: 10px 14px;
+		}
+	}
+}
+
+// Card defaults at zero specificity, so the Caption Color / Caption
+// Background set in the inspector always win.
+:where(.eb-infobox-caption-card) .eb-infobox-image-caption {
+	background-color: #fff;
+	color: #1d2939;
+}
+
 a.info-click-link.info-wrap-link,
 a.info-click-link.info-wrap-link:hover,
 a.info-click-link.info-wrap-link:focus {

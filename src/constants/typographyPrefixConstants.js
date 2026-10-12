@@ -5,3 +5,4 @@ export const typoPrefix_title = "title";
 export const typoPrefix_subTitle = "subTitle";
 export const typoPrefix_content = "content";
 export const typoPrefix_buttonText = "buttonText";
+export const typoPrefix_caption = "caption";

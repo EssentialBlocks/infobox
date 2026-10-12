@@ -27,6 +27,12 @@ export const MEDIA_ALIGNMENTS_ON_FLEX_COLUMN = [
 	{ label: __("Right", "essential-blocks"), value: "flex-end" },
 ];
 
+export const CAPTION_PRESETS = [
+	{ label: __("Above", "essential-blocks"), value: "above" },
+	{ label: __("Below", "essential-blocks"), value: "below" },
+	{ label: __("Card", "essential-blocks"), value: "card" },
+];
+
 export const MEDIA_ALIGNMENTS_ON_FLEX_ROW = [
 	{ label: __("Top", "essential-blocks"), value: "flex-start" },
 	{ label: __("Middle", "essential-blocks"), value: "center" },

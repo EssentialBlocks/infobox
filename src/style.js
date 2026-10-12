@@ -4,6 +4,7 @@ import {
     typoPrefix_subTitle,
     typoPrefix_number,
     typoPrefix_buttonText,
+    typoPrefix_caption,
 } from "./constants/typographyPrefixConstants";
 
 import {
@@ -87,10 +88,16 @@ export default function Style(props) {
         MOBnumberSizeUnit,
         isInfoClick,
         enableButton,
-        btnEffect
+        btnEffect,
+        displayCaption,
+        imageCaption,
+        captionColor,
+        captionBgColor,
+        captionPreset,
     } = attributes;
 
     const buttonThakbe = !isInfoClick && enableButton;
+    const hasCaption = media === "image" && displayCaption && imageCaption;
 
     //
     // styling codes starts from here
@@ -124,6 +131,16 @@ export default function Style(props) {
         attributes,
         prefixConstant: typoPrefix_content,
         defaultFontSize: 20,
+    });
+
+    const {
+        typoStylesDesktop: captionTypoStylesDesktop,
+        typoStylesTab: captionTypoStylesTab,
+        typoStylesMobile: captionTypoStylesMobile,
+    } = generateTypographyStyles({
+        attributes,
+        prefixConstant: typoPrefix_caption,
+        defaultFontSize: 14,
     });
 
     const {
@@ -533,6 +550,20 @@ export default function Style(props) {
             : " "
         }
 
+		${hasCaption
+            ? `
+				.eb-infobox-wrapper.${blockId} .eb-infobox-image-caption {
+					${captionTypoStylesDesktop}
+					${captionColor ? `color: ${captionColor};` : " "}
+					${captionPreset === "card" && captionBgColor
+                ? `background-color: ${captionBgColor};`
+                : " "
+            }
+				}
+				`
+            : " "
+        }
+
 		${buttonThakbe
             ? `
 
@@ -722,6 +753,15 @@ export default function Style(props) {
             : " "
         }
 
+		${hasCaption
+            ? `
+				.eb-infobox-wrapper.${blockId} .eb-infobox-image-caption {
+					${captionTypoStylesTab}
+				}
+				`
+            : " "
+        }
+
 		${buttonThakbe
             ? `
 				.eb-infobox-wrapper.${blockId} .contents-wrapper .infobox-btn{
@@ -888,6 +928,15 @@ export default function Style(props) {
 
 				}
 
+				`
+            : " "
+        }
+
+		${hasCaption
+            ? `
+				.eb-infobox-wrapper.${blockId} .eb-infobox-image-caption {
+					${captionTypoStylesMobile}
+				}
 				`
             : " "
         }

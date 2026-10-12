@@ -2,6 +2,8 @@ import { __ } from "@wordpress/i18n";
 import { MediaUpload, RichText } from "@wordpress/block-editor";
 import { Button } from "@wordpress/components";
 
+import { isSvgUrl, imageWrapperClass } from "../helpers";
+
 /**
  * Internal dependencies
  */
@@ -16,6 +18,10 @@ export default function InfoboxContainer({ attributes, setAttributes }) {
         imageUrl,
         imageId,
         imageAlt,
+        useFigureTag,
+        displayCaption,
+        imageCaption,
+        captionPreset,
         titleTag,
         title,
         enableSubTitle,
@@ -31,6 +37,10 @@ export default function InfoboxContainer({ attributes, setAttributes }) {
         classHook,
     } = attributes;
 
+    const ImageWrapperTag = useFigureTag ? "figure" : "div";
+    const CaptionTag = useFigureTag ? "figcaption" : "div";
+    const showCaption = displayCaption && imageCaption;
+
     return (
         <div className={`eb-parent-wrapper eb-parent-${blockId} ${classHook}`}>
             <div className={`${blockId} eb-infobox-wrapper`}>
@@ -38,7 +48,15 @@ export default function InfoboxContainer({ attributes, setAttributes }) {
                     {media === "icon" ? (
                         <div className="icon-img-wrapper">
                             <div className="eb-icon number-or-icon">
-                                <EBDisplayIcon icon={infoboxIcon} className={`eb-infobox-icon-data-selector`} />
+                                {isSvgUrl(infoboxIcon) ? (
+                                    <img
+                                        className="eb-infobox-icon-data-selector eb-infobox-svg-icon"
+                                        src={infoboxIcon}
+                                        alt=""
+                                    />
+                                ) : (
+                                    <EBDisplayIcon icon={infoboxIcon} className={`eb-infobox-icon-data-selector`} />
+                                )}
                             </div>
                         </div>
                     ) : null}
@@ -55,7 +73,12 @@ export default function InfoboxContainer({ attributes, setAttributes }) {
 
                     {media === "image" ? (
                         <div className="icon-img-wrapper">
-                            <div className="eb-infobox-image-wrapper">
+                            <ImageWrapperTag
+                                className={imageWrapperClass(
+                                    showCaption,
+                                    captionPreset
+                                )}
+                            >
                                 <MediaUpload
                                     onSelect={({ id, url, alt }) =>
                                         setAttributes({
@@ -84,12 +107,18 @@ export default function InfoboxContainer({ attributes, setAttributes }) {
                                                 <img
                                                     className="eb-infobox-image"
                                                     src={imageUrl}
+                                                    alt={imageAlt}
                                                 />
                                             );
                                         }
                                     }}
                                 />
-                            </div>
+                                {showCaption ? (
+                                    <CaptionTag className="eb-infobox-image-caption">
+                                        {imageCaption}
+                                    </CaptionTag>
+                                ) : null}
+                            </ImageWrapperTag>
                         </div>
                     ) : null}
 

@@ -117,6 +117,41 @@ const attributes = {
 		type: "string",
 	},
 
+	// image extras. All default to off so blocks saved before these existed
+	// keep producing identical markup ⬇
+	useFigureTag: {
+		type: "boolean",
+		default: false,
+	},
+	displayCaption: {
+		type: "boolean",
+		default: false,
+	},
+	imageCaption: {
+		type: "string",
+		default: "",
+	},
+	captionColor: {
+		type: "string",
+	},
+	// caption background, only offered for the "card" preset
+	captionBgColor: {
+		type: "string",
+	},
+	// where the caption sits: "below" | "above" | "card"
+	captionPreset: {
+		type: "string",
+		default: "below",
+	},
+	enableImageLink: {
+		type: "boolean",
+		default: false,
+	},
+	imageLink: {
+		type: "string",
+		default: "",
+	},
+
 	//
 	mediaImgWidthUnit: {
 		type: "string",
