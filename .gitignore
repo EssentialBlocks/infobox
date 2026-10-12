@@ -31,6 +31,9 @@ node_modules/
 #ide
 .idea
 
+# Personal learning notes, not part of the plugin
+LEARNING-GUIDE.md
+
 # package-lock.json is intentionally COMMITTED - CI runs `npm ci` against it
 # so release builds are reproducible. Do not add it back here.
 yarn.lock

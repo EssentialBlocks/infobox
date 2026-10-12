@@ -118,6 +118,7 @@ assets/fonts/fa-brands-400.eot
 # Internal docs & archives
 README.md
 compatibility-report.md
+LEARNING-GUIDE.md
 *.sql
 *.tar.gz
 *.zip
