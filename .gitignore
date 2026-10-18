@@ -34,6 +34,10 @@ node_modules/
 # Personal learning notes, not part of the plugin
 LEARNING-GUIDE.md
 
+# Source maps are debug-only build output; they are not shipped either
+# (see *.map in .distignore)
+*.map
+
 # package-lock.json is intentionally COMMITTED - CI runs `npm ci` against it
 # so release builds are reproducible. Do not add it back here.
 yarn.lock
