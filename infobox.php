@@ -94,7 +94,10 @@ function create_block_infobox_block_init() {
             'essential-blocks-animation',
             'fontawesome-frontend-css'
         ],
-        INFOBOX_VERSION,
+        // dist/style.css is built together with dist/index.js, so reuse its
+        // build hash. A fixed plugin version keeps serving a cached stylesheet
+        // after a rebuild until the version is bumped.
+        $script_asset['version'],
         "all"
     );
 
