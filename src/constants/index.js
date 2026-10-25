@@ -211,3 +211,33 @@ export const HOVER_EFFECT = [
 		value: "hvr-curl-bottom-left",
 	},
 ];
+
+export const PREFIX_STYLES = [
+	{ label: __("Text", "essential-blocks"), value: "text" },
+	{ label: __("Badge", "essential-blocks"), value: "badge" },
+];
+
+export const PREFIX_POSITIONS = [
+	{ label: __("Above Title", "essential-blocks"), value: "inline" },
+	{ label: __("Top Left", "essential-blocks"), value: "top-left" },
+	{ label: __("Top Right", "essential-blocks"), value: "top-right" },
+	{ label: __("Bottom Left", "essential-blocks"), value: "bottom-left" },
+	{ label: __("Bottom Right", "essential-blocks"), value: "bottom-right" },
+];
+
+export const MAX_WIDTH_UNITS = [
+	{ label: "px", value: "px" },
+	{ label: "%", value: "%" },
+	{ label: "vw", value: "vw" },
+];
+
+// One-click box shadows for the wrapper. Each preset writes the existing
+// wrapper Border & Shadow attributes, so the custom controls stay in sync.
+// Hover values are cleared so the hover state falls back to the same shadow.
+export const SHADOW_PRESETS = [
+	{ label: __("None", "essential-blocks"), value: "none", shadow: null },
+	{ label: __("Soft", "essential-blocks"), value: "soft", shadow: { hOffset: 0, vOffset: 2, blur: 8, spread: 0, color: "rgba(16,24,40,0.08)" } },
+	{ label: __("Medium", "essential-blocks"), value: "medium", shadow: { hOffset: 0, vOffset: 6, blur: 16, spread: -2, color: "rgba(16,24,40,0.12)" } },
+	{ label: __("Lifted", "essential-blocks"), value: "lifted", shadow: { hOffset: 0, vOffset: 16, blur: 32, spread: -8, color: "rgba(16,24,40,0.2)" } },
+	{ label: __("Sharp", "essential-blocks"), value: "sharp", shadow: { hOffset: 4, vOffset: 4, blur: 0, spread: 0, color: "rgba(16,24,40,0.9)" } },
+];

@@ -2,7 +2,7 @@ import { __ } from "@wordpress/i18n";
 import { MediaUpload, RichText } from "@wordpress/block-editor";
 import { Button } from "@wordpress/components";
 
-import { isSvgUrl, imageWrapperClass } from "../helpers";
+import { isSvgUrl, imageWrapperClass, prefixClass, isCornerPrefix } from "../helpers";
 
 /**
  * Internal dependencies
@@ -22,6 +22,10 @@ export default function InfoboxContainer({ attributes, setAttributes }) {
         displayCaption,
         imageCaption,
         captionPreset,
+        showPrefix,
+        prefixText,
+        prefixStyle,
+        prefixPosition,
         titleTag,
         title,
         enableSubTitle,
@@ -44,6 +48,13 @@ export default function InfoboxContainer({ attributes, setAttributes }) {
     return (
         <div className={`eb-parent-wrapper eb-parent-${blockId} ${classHook}`}>
             <div className={`${blockId} eb-infobox-wrapper`}>
+                {/* A corner badge sits outside the inner wrapper so it is
+                    positioned against the whole box and above the overlay */}
+                {showPrefix && prefixText && isCornerPrefix(prefixPosition) ? (
+                    <span className={prefixClass(prefixStyle, prefixPosition)}>
+                        {prefixText}
+                    </span>
+                ) : null}
                 <div className="infobox-wrapper-inner">
                     {media === "icon" ? (
                         <div className="icon-img-wrapper">
@@ -123,6 +134,12 @@ export default function InfoboxContainer({ attributes, setAttributes }) {
                     ) : null}
 
                     <div className="contents-wrapper">
+                        {showPrefix && prefixText && !isCornerPrefix(prefixPosition) ? (
+                            <span className={prefixClass(prefixStyle, prefixPosition)}>
+                                {prefixText}
+                            </span>
+                        ) : null}
+
                         <RichText
                             tagName={titleTag}
                             className="title"

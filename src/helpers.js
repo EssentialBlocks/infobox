@@ -14,3 +14,24 @@ export const imageWrapperClass = (showCaption, captionPreset) =>
     showCaption
         ? `eb-infobox-image-wrapper eb-infobox-caption-${captionPreset || "below"}`
         : "eb-infobox-image-wrapper";
+
+/**
+ * True when the prefix / badge is pinned to a corner of the box instead of
+ * sitting above the title.
+ */
+export const isCornerPrefix = (prefixPosition) =>
+    !!prefixPosition && prefixPosition !== "inline";
+
+/**
+ * Class list for the prefix / badge.
+ */
+export const prefixClass = (prefixStyle, prefixPosition) =>
+    [
+        "eb-infobox-prefix",
+        prefixStyle === "badge" ? "eb-infobox-prefix-badge" : "",
+        isCornerPrefix(prefixPosition)
+            ? `eb-infobox-prefix-pos eb-infobox-prefix-${prefixPosition}`
+            : "",
+    ]
+        .filter(Boolean)
+        .join(" ");
