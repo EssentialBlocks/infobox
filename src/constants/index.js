@@ -241,3 +241,24 @@ export const SHADOW_PRESETS = [
 	{ label: __("Lifted", "essential-blocks"), value: "lifted", shadow: { hOffset: 0, vOffset: 16, blur: 32, spread: -8, color: "rgba(16,24,40,0.2)" } },
 	{ label: __("Sharp", "essential-blocks"), value: "sharp", shadow: { hOffset: 4, vOffset: 4, blur: 0, spread: 0, color: "rgba(16,24,40,0.9)" } },
 ];
+
+// Hover animation for the whole box. CSS lives in style.js.
+export const BOX_HOVER_EFFECTS = [
+	{ label: __("None", "essential-blocks"), value: "" },
+	{ label: __("Lift Up", "essential-blocks"), value: "lift" },
+	{ label: __("Scale Up", "essential-blocks"), value: "scale" },
+	{ label: __("Scale Down", "essential-blocks"), value: "shrink" },
+];
+
+// Hover animation for the media (icon / image / number), played while the
+// box is hovered. Pulse and Bounce use keyframes in style.scss.
+export const MEDIA_HOVER_EFFECTS = [
+	{ label: __("None", "essential-blocks"), value: "" },
+	{ label: __("Zoom In", "essential-blocks"), value: "zoom-in" },
+	{ label: __("Zoom Out", "essential-blocks"), value: "zoom-out" },
+	{ label: __("Move Up", "essential-blocks"), value: "move-up" },
+	{ label: __("Rotate", "essential-blocks"), value: "rotate" },
+	{ label: __("Spin", "essential-blocks"), value: "spin" },
+	{ label: __("Pulse", "essential-blocks"), value: "pulse" },
+	{ label: __("Bounce", "essential-blocks"), value: "bounce" },
+];

@@ -86,6 +86,8 @@ import {
     PREFIX_POSITIONS,
     SHADOW_PRESETS,
     MAX_WIDTH_UNITS,
+    BOX_HOVER_EFFECTS,
+    MEDIA_HOVER_EFFECTS,
 } from "./constants";
 
 // The shadow preset that matches the wrapper's current shadow, if any.
@@ -162,6 +164,8 @@ function Inspector(props) {
         prefixHoverColor,
         prefixHoverBgColor,
         fillHeight,
+        boxHoverEffect,
+        mediaHoverEffect,
         enableImageLink,
         imageLink,
 
@@ -1255,6 +1259,51 @@ function Inspector(props) {
                                             </>
                                     </PanelBody>
                                     )}
+
+                                    <PanelBody
+                                        title={__(
+                                            "Hover Animation",
+                                            "essential-blocks"
+                                        )}
+                                        initialOpen={false}
+                                    >
+                                        <SelectControl
+                                            label={__(
+                                                "Box",
+                                                "essential-blocks"
+                                            )}
+                                            help={__(
+                                                "Moves the whole box when it is hovered.",
+                                                "essential-blocks"
+                                            )}
+                                            value={boxHoverEffect}
+                                            options={BOX_HOVER_EFFECTS}
+                                            onChange={(boxHoverEffect) =>
+                                                setAttributes({
+                                                    boxHoverEffect,
+                                                })
+                                            }
+                                        />
+                                        {media !== "none" && (
+                                            <SelectControl
+                                                label={__(
+                                                    "Icon / Image",
+                                                    "essential-blocks"
+                                                )}
+                                                help={__(
+                                                    "Plays while the box is hovered.",
+                                                    "essential-blocks"
+                                                )}
+                                                value={mediaHoverEffect}
+                                                options={MEDIA_HOVER_EFFECTS}
+                                                onChange={(mediaHoverEffect) =>
+                                                    setAttributes({
+                                                        mediaHoverEffect,
+                                                    })
+                                                }
+                                            />
+                                        )}
+                                    </PanelBody>
 
                                     {showPrefix && prefixText && (
                                         <PanelBody

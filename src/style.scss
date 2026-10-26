@@ -202,3 +202,44 @@ div.eb-infobox-wrapper {
 		}
 	}
 }
+
+// Media hover animations that need keyframes (Pulse, Bounce). Which box uses
+// them is decided in style.js.
+@keyframes eb-infobox-pulse {
+	0%,
+	100% {
+		transform: scale(1);
+	}
+
+	50% {
+		transform: scale(1.1);
+	}
+}
+
+@keyframes eb-infobox-bounce {
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+
+	30% {
+		transform: translateY(-10px);
+	}
+
+	50% {
+		transform: translateY(0);
+	}
+
+	70% {
+		transform: translateY(-5px);
+	}
+}
+
+// Respect the visitor's "reduce motion" setting: no hover movement at all.
+@media (prefers-reduced-motion: reduce) {
+	div.eb-infobox-wrapper,
+	div.eb-infobox-wrapper .icon-img-wrapper {
+		transform: none !important;
+		animation: none !important;
+	}
+}
