@@ -83,7 +83,8 @@ Yes, it will work with any standard WordPress theme.
 == Changelog ==
 
 = 1.3.1 - 26/10/2026 =
-* Security: Hardened block style generation
+* Improved: Security enhancements
+* Few minor bug fixes & improvements
 
 = 1.3.0 - 18/08/2026 =
 * Fixed: PHP 8.0–8.5 compatibility issues
