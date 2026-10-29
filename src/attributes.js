@@ -182,6 +182,17 @@ const attributes = {
 		default: false,
 	},
 
+	// hover animations (see BOX_HOVER_EFFECTS / MEDIA_HOVER_EFFECTS). Empty
+	// means none; CSS only, no markup ⬇
+	boxHoverEffect: {
+		type: "string",
+		default: "",
+	},
+	mediaHoverEffect: {
+		type: "string",
+		default: "",
+	},
+
 	// where the caption sits: "below" | "above" | "card"
 	captionPreset: {
 		type: "string",
