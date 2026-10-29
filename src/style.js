@@ -106,6 +106,9 @@ export default function Style(props) {
         prefixHoverColor,
         prefixHoverBgColor,
         fillHeight,
+        hideOnDesktop,
+        hideOnTab,
+        hideOnMobile,
     } = attributes;
 
     const buttonThakbe = !isInfoClick && enableButton;
@@ -442,7 +445,12 @@ export default function Style(props) {
     // only applies while height is auto. In a flow parent (e.g. a Column,
     // already stretched by Columns) height: 100% does it. .eb-parent-wrapper
     // is repeated in the selector to outrank the ".eb-parent-<id> { display:
-    // block }" that the Hide on Desktop / Tab / Mobile controls write.
+    // block }" that the Hide on Desktop / Tab / Mobile controls write. That
+    // also outranks their "display: none", so the display is set per device
+    // here and a hidden device gets "display: none" (or nothing on desktop,
+    // where the Hide control's own rule then applies).
+    const fillHeightDisplay = (hidden) =>
+        `.eb-parent-wrapper.eb-parent-${blockId} { display: ${hidden ? "none" : "flex"}; }`;
     const wrapperStylesDesktop = `
 		.eb-infobox-wrapper.${blockId} {
 			${wrapperMarginStylesDesktop}
@@ -490,7 +498,7 @@ export default function Style(props) {
 				}
 				.eb-parent-wrapper.eb-parent-${blockId} {
 					height: 100%;
-					display: flex;
+					${hideOnDesktop ? " " : "display: flex;"}
 					flex-direction: column;
 				}
 				.eb-parent-wrapper.eb-parent-${blockId} > .eb-infobox-wrapper {
@@ -766,6 +774,8 @@ export default function Style(props) {
 
 		${maxWidthTab ? `.eb-parent-${blockId} { ${maxWidthTab} }` : " "}
 
+		${fillHeight ? fillHeightDisplay(hideOnTab) : " "}
+
 		${hasPrefix
             ? `.eb-infobox-wrapper.${blockId} .eb-infobox-prefix { ${prefixTypoStylesTab} ${prefixPaddingTab} ${prefixMarginTab} }`
             : " "
@@ -953,6 +963,8 @@ export default function Style(props) {
 		}
 
 		${maxWidthMobile ? `.eb-parent-${blockId} { ${maxWidthMobile} }` : " "}
+
+		${fillHeight ? fillHeightDisplay(hideOnMobile) : " "}
 
 		${hasPrefix
             ? `.eb-infobox-wrapper.${blockId} .eb-infobox-prefix { ${prefixTypoStylesMobile} ${prefixPaddingMobile} ${prefixMarginMobile} }`
