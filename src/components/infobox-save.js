@@ -1,5 +1,5 @@
 import { RichText } from "@wordpress/block-editor";
-import { isSvgUrl, imageWrapperClass } from "../helpers";
+import { isSvgUrl, imageWrapperClass, sanitizeLinkUrl } from "../helpers";
 const { EBDisplayIcon } = window.EBInfoboxControls;
 export default function InfoboxContainer({ requiredProps }) {
     const {
@@ -36,6 +36,7 @@ export default function InfoboxContainer({ requiredProps }) {
     const ImageWrapperTag = useFigureTag ? "figure" : "div";
     const CaptionTag = useFigureTag ? "figcaption" : "div";
     const showCaption = displayCaption && imageCaption;
+    const safeImageLink = enableImageLink ? sanitizeLinkUrl(imageLink) : "";
     const image = (
         <img className="eb-infobox-image" src={imageUrl} alt={imageAlt} />
     );
@@ -79,9 +80,9 @@ export default function InfoboxContainer({ requiredProps }) {
                                 )}
                             >
                                 {/* No nested link when the whole infobox is already one */}
-                                {enableImageLink && imageLink && !isInfoClick ? (
+                                {safeImageLink && !isInfoClick ? (
                                     <a
-                                        href={imageLink}
+                                        href={safeImageLink}
                                         className="eb-infobox-image-link"
                                     >
                                         {image}
