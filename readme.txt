@@ -77,6 +77,14 @@ Consider checking out our other WordPress solutions & boost your WordPress websi
 
 Yes, it will work with any standard WordPress theme.
 
+== External services ==
+
+This plugin can load fonts from Google Fonts, a service provided by Google.
+
+It is used when you choose a font family (anything other than "Default") in an Infobox block's typography settings. On pages that show such a block, the visitor's browser requests the font stylesheet from `fonts.googleapis.com`, and the font files from Google's servers. This sends Google the visitor's IP address and browser information (such as the user agent and referring page). If every Infobox block on a page uses the "Default" font, no request is made.
+
+Google Fonts is provided by Google LLC: [Terms of Service](https://policies.google.com/terms), [Privacy Policy](https://policies.google.com/privacy).
+
 == Screenshots ==
 
 

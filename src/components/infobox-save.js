@@ -1,5 +1,11 @@
 import { RichText } from "@wordpress/block-editor";
-import { isSvgUrl, imageWrapperClass, sanitizeLinkUrl } from "../helpers";
+import {
+    isSvgUrl,
+    imageWrapperClass,
+    sanitizeLinkUrl,
+    prefixClass,
+    isCornerPrefix,
+} from "../helpers";
 const { EBDisplayIcon } = window.EBInfoboxControls;
 export default function InfoboxContainer({ requiredProps }) {
     const {
@@ -13,6 +19,10 @@ export default function InfoboxContainer({ requiredProps }) {
         displayCaption,
         imageCaption,
         captionPreset,
+        showPrefix,
+        prefixText,
+        prefixStyle,
+        prefixPosition,
         enableImageLink,
         imageLink,
         infoboxLink,
@@ -44,6 +54,13 @@ export default function InfoboxContainer({ requiredProps }) {
     return (
         <div className={`eb-parent-wrapper eb-parent-${blockId} ${classHook}`}>
             <div className={`${blockId} eb-infobox-wrapper`}>
+                {/* A corner badge sits outside the inner wrapper so it is
+                    positioned against the whole box and above the overlay */}
+                {showPrefix && prefixText && isCornerPrefix(prefixPosition) ? (
+                    <span className={prefixClass(prefixStyle, prefixPosition)}>
+                        {prefixText}
+                    </span>
+                ) : null}
                 <div className="infobox-wrapper-inner">
                     {media === "icon" ? (
                         <div className="icon-img-wrapper">
@@ -100,6 +117,12 @@ export default function InfoboxContainer({ requiredProps }) {
                     ) : null}
 
                     <div className="contents-wrapper">
+                        {showPrefix && prefixText && !isCornerPrefix(prefixPosition) ? (
+                            <span className={prefixClass(prefixStyle, prefixPosition)}>
+                                {prefixText}
+                            </span>
+                        ) : null}
+
                         <RichText.Content
                             tagName={titleTag}
                             className="title"
