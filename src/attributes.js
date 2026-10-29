@@ -10,6 +10,8 @@ import {
 	subTitlePadding,
 	wrapperMargin,
 	wrapperPadding,
+	prefixPadding,
+	prefixMargin,
 } from "./constants/dimensionsConstants";
 
 import { infoWrapBg, infoBtnBg } from "./constants/backgroundsConstants";
@@ -21,6 +23,7 @@ import {
 	mediaImageWidth,
 	mediaImageHeight,
 	mediaContentGap,
+	wrapperMaxWidth,
 } from "./constants/rangeNames";
 
 const {
@@ -115,6 +118,93 @@ const attributes = {
 
 	imageAlt: {
 		type: "string",
+	},
+
+	// image extras. All default to off so blocks saved before these existed
+	// keep producing identical markup ⬇
+	useFigureTag: {
+		type: "boolean",
+		default: false,
+	},
+	displayCaption: {
+		type: "boolean",
+		default: false,
+	},
+	imageCaption: {
+		type: "string",
+		default: "",
+	},
+	captionColor: {
+		type: "string",
+	},
+	// caption background, only offered for the "card" preset
+	captionBgColor: {
+		type: "string",
+	},
+	// prefix / badge shown above the title. Off by default so existing
+	// blocks keep identical markup ⬇
+	showPrefix: {
+		type: "boolean",
+		default: false,
+	},
+	prefixText: {
+		type: "string",
+		default: "",
+	},
+	// "text" | "badge"
+	prefixStyle: {
+		type: "string",
+		default: "text",
+	},
+	// "inline" (above the title) | "top-left" | "top-right" |
+	// "bottom-left" | "bottom-right" (pinned to a corner of the box)
+	prefixPosition: {
+		type: "string",
+		default: "inline",
+	},
+	prefixColor: {
+		type: "string",
+	},
+	prefixBgColor: {
+		type: "string",
+	},
+	prefixHoverColor: {
+		type: "string",
+	},
+	prefixHoverBgColor: {
+		type: "string",
+	},
+
+	// stretch the box to the full height of its column, so boxes side by
+	// side line up ⬇
+	fillHeight: {
+		type: "boolean",
+		default: false,
+	},
+
+	// hover animations (see BOX_HOVER_EFFECTS / MEDIA_HOVER_EFFECTS). Empty
+	// means none; CSS only, no markup ⬇
+	boxHoverEffect: {
+		type: "string",
+		default: "",
+	},
+	mediaHoverEffect: {
+		type: "string",
+		default: "",
+	},
+
+	// where the caption sits: "below" | "above" | "card"
+	captionPreset: {
+		type: "string",
+		default: "below",
+	},
+	enableImageLink: {
+		type: "boolean",
+		default: false,
+	},
+	imageLink: {
+		type: "string",
+		default: "",
 	},
 
 	//
@@ -330,6 +420,8 @@ const attributes = {
 		defaultRange: 20,
 		noUnits: true,
 	}),
+	// no default: max-width is only output once the user sets it
+	...generateResponsiveRangeAttributes(wrapperMaxWidth),
 
 	// typography attributes
 	...generateTypographyAttributes(Object.values(typoPrefixs)),
@@ -380,6 +472,9 @@ const attributes = {
 	}),
 
 	...generateDimensionsAttributes(wrapperMargin),
+	// no defaults: the badge keeps its built-in padding until these are set
+	...generateDimensionsAttributes(prefixPadding),
+	...generateDimensionsAttributes(prefixMargin),
 	...generateDimensionsAttributes(wrapperPadding, {
 		top: 50,
 		bottom: 70,

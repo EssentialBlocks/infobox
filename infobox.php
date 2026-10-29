@@ -86,6 +86,11 @@ function create_block_infobox_block_init() {
     );
 
     $style_css = INFOBOX_ADMIN_URL . 'dist/style.css';
+    // Version dist/style.css by its own modification time. A fixed plugin
+    // version keeps serving a cached stylesheet after a rebuild, and the
+    // dist/index.asset.php hash does not change when only the SCSS changes.
+    $style_css_path    = INFOBOX_ADMIN_PATH . '/dist/style.css';
+    $style_css_version = file_exists( $style_css_path ) ? (string) filemtime( $style_css_path ) : INFOBOX_VERSION;
     wp_register_style(
         'create-block-infobox-block-css',
         $style_css,
@@ -94,7 +99,7 @@ function create_block_infobox_block_init() {
             'essential-blocks-animation',
             'fontawesome-frontend-css'
         ],
-        INFOBOX_VERSION,
+        $style_css_version,
         "all"
     );
 
@@ -139,6 +144,33 @@ function create_block_infobox_block_init() {
         "all"
     );
 
+    /**
+     * Editor styles. These must be registered here on `init`, not on
+     * `admin_enqueue_scripts`: the iframed editor canvas collects block
+     * `editor_style` handles before `admin_enqueue_scripts` fires, so a handle
+     * registered there is silently missing from the canvas (no Font Awesome,
+     * no Dashicons, no block CSS such as the media `display: flex`).
+     */
+    wp_register_style(
+        'essential-blocks-iconpicker-css',
+        INFOBOX_ADMIN_URL . 'dist/style-modules.css',
+        [],
+        INFOBOX_VERSION,
+        'all'
+    );
+
+    wp_register_style(
+        'infobox-editor-css',
+        INFOBOX_ADMIN_URL . 'dist/modules.css',
+        [
+            'create-block-infobox-block-css',
+            'essential-blocks-iconpicker-css',
+            'dashicons',
+        ],
+        INFOBOX_VERSION,
+        'all'
+    );
+
     if ( ! WP_Block_Type_Registry::get_instance()->is_registered( 'essential-blocks/infobox' ) ) {
         register_block_type(
             Infobox_Helper::get_block_register_path( "infobox/infobox", INFOBOX_ADMIN_PATH ),
@@ -149,6 +181,12 @@ function create_block_infobox_block_init() {
                     if ( ! is_admin() ) {
                         wp_enqueue_style( 'create-block-infobox-block-css' );
                         wp_enqueue_script( 'essential-blocks-eb-animation' );
+
+                        // Dashicons is not loaded on the front end by default.
+                        $icon = isset( $attributes['infoboxIcon'] ) ? (string) $attributes['infoboxIcon'] : '';
+                        if ( false !== strpos( $icon, 'dashicons' ) ) {
+                            wp_enqueue_style( 'dashicons' );
+                        }
                     }
                     return $content;
                 }

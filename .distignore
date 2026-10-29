@@ -97,6 +97,11 @@ Thumbs.db
 # Source maps — 3.8 MB of debug-only data, not needed by end users
 *.map
 
+# Dead bundle from the controls build (window.eb_frontend icon helpers).
+# Nothing registers or enqueues it, so it is unreachable.
+dist/frontend.js
+dist/frontend.asset.php
+
 # Orphaned FontAwesome 4 webfonts. Nothing references these — the plugin ships
 # font-awesome5.css, which only points at fa-solid / fa-regular / fa-brands.
 assets/fonts/fontawesome-webfont.*
@@ -118,6 +123,7 @@ assets/fonts/fa-brands-400.eot
 # Internal docs & archives
 README.md
 compatibility-report.md
+LEARNING-GUIDE.md
 *.sql
 *.tar.gz
 *.zip

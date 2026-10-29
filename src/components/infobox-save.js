@@ -1,4 +1,11 @@
 import { RichText } from "@wordpress/block-editor";
+import {
+    isSvgUrl,
+    imageWrapperClass,
+    sanitizeLinkUrl,
+    prefixClass,
+    isCornerPrefix,
+} from "../helpers";
 const { EBDisplayIcon } = window.EBInfoboxControls;
 export default function InfoboxContainer({ requiredProps }) {
     const {
@@ -8,6 +15,16 @@ export default function InfoboxContainer({ requiredProps }) {
         number,
         imageUrl,
         imageAlt,
+        useFigureTag,
+        displayCaption,
+        imageCaption,
+        captionPreset,
+        showPrefix,
+        prefixText,
+        prefixStyle,
+        prefixPosition,
+        enableImageLink,
+        imageLink,
         infoboxLink,
         linkNewTab,
         enableSubTitle,
@@ -24,14 +41,39 @@ export default function InfoboxContainer({ requiredProps }) {
         classHook,
     } = requiredProps;
 
+    // With every image extra off this renders exactly the pre-existing
+    // markup, so older saved blocks still validate.
+    const ImageWrapperTag = useFigureTag ? "figure" : "div";
+    const CaptionTag = useFigureTag ? "figcaption" : "div";
+    const showCaption = displayCaption && imageCaption;
+    const safeImageLink = enableImageLink ? sanitizeLinkUrl(imageLink) : "";
+    const image = (
+        <img className="eb-infobox-image" src={imageUrl} alt={imageAlt} />
+    );
+
     return (
         <div className={`eb-parent-wrapper eb-parent-${blockId} ${classHook}`}>
             <div className={`${blockId} eb-infobox-wrapper`}>
+                {/* A corner badge sits outside the inner wrapper so it is
+                    positioned against the whole box and above the overlay */}
+                {showPrefix && prefixText && isCornerPrefix(prefixPosition) ? (
+                    <span className={prefixClass(prefixStyle, prefixPosition)}>
+                        {prefixText}
+                    </span>
+                ) : null}
                 <div className="infobox-wrapper-inner">
                     {media === "icon" ? (
                         <div className="icon-img-wrapper">
                             <div className="eb-icon number-or-icon">
-                                <EBDisplayIcon icon={infoboxIcon} className={`eb-infobox-icon-data-selector`} />
+                                {isSvgUrl(infoboxIcon) ? (
+                                    <img
+                                        className="eb-infobox-icon-data-selector eb-infobox-svg-icon"
+                                        src={infoboxIcon}
+                                        alt=""
+                                    />
+                                ) : (
+                                    <EBDisplayIcon icon={infoboxIcon} className={`eb-infobox-icon-data-selector`} />
+                                )}
                             </div>
                         </div>
                     ) : null}
@@ -48,17 +90,39 @@ export default function InfoboxContainer({ requiredProps }) {
 
                     {media === "image" ? (
                         <div className="icon-img-wrapper">
-                            <div className="eb-infobox-image-wrapper">
-                                <img
-                                    className="eb-infobox-image"
-                                    src={imageUrl}
-                                    alt={imageAlt}
-                                />
-                            </div>
+                            <ImageWrapperTag
+                                className={imageWrapperClass(
+                                    showCaption,
+                                    captionPreset
+                                )}
+                            >
+                                {/* No nested link when the whole infobox is already one */}
+                                {safeImageLink && !isInfoClick ? (
+                                    <a
+                                        href={safeImageLink}
+                                        className="eb-infobox-image-link"
+                                    >
+                                        {image}
+                                    </a>
+                                ) : (
+                                    image
+                                )}
+                                {showCaption ? (
+                                    <CaptionTag className="eb-infobox-image-caption">
+                                        {imageCaption}
+                                    </CaptionTag>
+                                ) : null}
+                            </ImageWrapperTag>
                         </div>
                     ) : null}
 
                     <div className="contents-wrapper">
+                        {showPrefix && prefixText && !isCornerPrefix(prefixPosition) ? (
+                            <span className={prefixClass(prefixStyle, prefixPosition)}>
+                                {prefixText}
+                            </span>
+                        ) : null}
+
                         <RichText.Content
                             tagName={titleTag}
                             className="title"
