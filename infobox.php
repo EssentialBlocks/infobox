@@ -86,6 +86,11 @@ function create_block_infobox_block_init() {
     );
 
     $style_css = INFOBOX_ADMIN_URL . 'dist/style.css';
+    // Version dist/style.css by its own modification time. A fixed plugin
+    // version keeps serving a cached stylesheet after a rebuild, and the
+    // dist/index.asset.php hash does not change when only the SCSS changes.
+    $style_css_path    = INFOBOX_ADMIN_PATH . '/dist/style.css';
+    $style_css_version = file_exists( $style_css_path ) ? (string) filemtime( $style_css_path ) : INFOBOX_VERSION;
     wp_register_style(
         'create-block-infobox-block-css',
         $style_css,
@@ -94,7 +99,7 @@ function create_block_infobox_block_init() {
             'essential-blocks-animation',
             'fontawesome-frontend-css'
         ],
-        INFOBOX_VERSION,
+        $style_css_version,
         "all"
     );
 
