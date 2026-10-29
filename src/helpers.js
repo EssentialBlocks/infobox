@@ -35,3 +35,36 @@ export const prefixClass = (prefixStyle, prefixPosition) =>
     ]
         .filter(Boolean)
         .join(" ");
+
+/**
+ * Title, subtitle and description are rich text (HTML). The sidebar edits them
+ * as plain text: line breaks become "\n", tags are dropped, entities decoded.
+ */
+export const richTextToPlain = (html) => {
+    if (!html) {
+        return "";
+    }
+    const doc = new window.DOMParser().parseFromString(
+        `<body>${String(html).replace(/<br\s*\/?>/gi, "\n")}</body>`,
+        "text/html"
+    );
+    return doc.body.textContent || "";
+};
+
+/**
+ * Plain text from the sidebar back to rich text: escape it so typed "<" or
+ * "&" can never become markup, and keep line breaks as <br>.
+ */
+export const plainToRichText = (text) =>
+    String(text || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\n/g, "<br>");
+
+/**
+ * True when rich text holds formatting (bold, italic, links...) that editing
+ * it as plain text in the sidebar would remove. Line breaks don't count.
+ */
+export const hasRichFormatting = (html) =>
+    /<(?!br\s*\/?>)[a-z]/i.test(String(html || ""));

@@ -36,6 +36,7 @@ const {
 } = window.EBInfoboxControls;
 
 import InfoboxIconPicker from "./components/icon-picker";
+import ContentField from "./components/content-field";
 
 import {
     typoPrefix_title,
@@ -166,6 +167,9 @@ function Inspector(props) {
         fillHeight,
         boxHoverEffect,
         mediaHoverEffect,
+        title,
+        subTitle,
+        description,
         enableImageLink,
         imageLink,
 
@@ -311,6 +315,51 @@ function Inspector(props) {
                         <div className={"eb-tab-controls" + tab.name}>
                             {tab.name === "general" && (
                                 <>
+                                    <PanelBody
+                                        title={__(
+                                            "Content",
+                                            "essential-blocks"
+                                        )}
+                                    >
+                                        <ContentField
+                                            label={__(
+                                                "Title",
+                                                "essential-blocks"
+                                            )}
+                                            value={title}
+                                            onChange={(title) =>
+                                                setAttributes({ title })
+                                            }
+                                        />
+                                        {enableSubTitle && (
+                                            <ContentField
+                                                label={__(
+                                                    "Subtitle",
+                                                    "essential-blocks"
+                                                )}
+                                                value={subTitle}
+                                                onChange={(subTitle) =>
+                                                    setAttributes({ subTitle })
+                                                }
+                                            />
+                                        )}
+                                        {enableDescription && (
+                                            <ContentField
+                                                label={__(
+                                                    "Description",
+                                                    "essential-blocks"
+                                                )}
+                                                value={description}
+                                                onChange={(description) =>
+                                                    setAttributes({
+                                                        description,
+                                                    })
+                                                }
+                                                multiline
+                                            />
+                                        )}
+                                    </PanelBody>
+
                                     <PanelBody
                                         title={__(
                                             "Infobox Settings",
