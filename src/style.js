@@ -109,6 +109,8 @@ export default function Style(props) {
         hideOnDesktop,
         hideOnTab,
         hideOnMobile,
+        boxHoverEffect,
+        mediaHoverEffect,
     } = attributes;
 
     const buttonThakbe = !isInfoClick && enableButton;
@@ -451,14 +453,53 @@ export default function Style(props) {
     // where the Hide control's own rule then applies).
     const fillHeightDisplay = (hidden) =>
         `.eb-parent-wrapper.eb-parent-${blockId} { display: ${hidden ? "none" : "flex"}; }`;
+
+    // Hover animations. Transforms only, so they never change layout.
+    const boxHoverTransform = {
+        lift: "translateY(-8px)",
+        scale: "scale(1.03)",
+        shrink: "scale(0.97)",
+    }[boxHoverEffect];
+    const mediaHoverTransform = {
+        "zoom-in": "scale(1.15)",
+        "zoom-out": "scale(0.85)",
+        "move-up": "translateY(-8px)",
+        rotate: "rotate(15deg)",
+        spin: "rotate(360deg)",
+    }[mediaHoverEffect];
+    const mediaHoverAnimation = {
+        pulse: "eb-infobox-pulse 0.8s ease-in-out infinite",
+        bounce: "eb-infobox-bounce 0.8s ease",
+    }[mediaHoverEffect];
+    const hasMediaHover =
+        media !== "none" && (mediaHoverTransform || mediaHoverAnimation);
+
     const wrapperStylesDesktop = `
 		.eb-infobox-wrapper.${blockId} {
 			${wrapperMarginStylesDesktop}
 			${wrapperPaddingStylesDesktop}
 			${bdShadowStyesDesktop}
 			${backgroundStylesDesktop}
-			transition: ${bgTransitionStyle}, ${bdShadowTransitionStyle};
+			transition: ${bgTransitionStyle}, ${bdShadowTransitionStyle}${boxHoverTransform ? ", transform 0.3s ease" : ""};
 		}
+
+		${boxHoverTransform
+            ? `.eb-infobox-wrapper.${blockId}:hover { transform: ${boxHoverTransform}; }`
+            : " "
+        }
+
+		${hasMediaHover
+            ? `
+				.eb-infobox-wrapper.${blockId} .icon-img-wrapper {
+					transition: transform ${mediaHoverEffect === "spin" ? "0.6s" : "0.3s"} ease;
+				}
+				.eb-infobox-wrapper.${blockId}:hover .icon-img-wrapper {
+					${mediaHoverTransform ? `transform: ${mediaHoverTransform};` : " "}
+					${mediaHoverAnimation ? `animation: ${mediaHoverAnimation};` : " "}
+				}
+				`
+            : " "
+        }
 
 		.eb-infobox-wrapper.${blockId}:hover{
 			${hoverBackgroundStylesDesktop}
