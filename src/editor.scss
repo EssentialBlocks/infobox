@@ -1,0 +1,29 @@
+/**
+ * Inspector styles. They load in the editor only, so pages with an Infobox don't download them.
+ */
+
+@import "./components/icon-picker";
+
+// Inspector: a range control row is [slider + number][reset]. Flex items
+// default to min-width: auto, so on WP 7 (80px number input) the slider
+// part refuses to shrink and pushes the reset button out of the sidebar.
+.eb-panel-control .eb-component-wrapper {
+	min-width: 0;
+
+	> .components-base-control {
+		min-width: 0;
+	}
+
+	> .eb-range-reset-button {
+		flex-shrink: 0;
+	}
+
+	// The controls CSS narrows the number input to 70px, but WP 7 sizes its
+	// inner container at 80px, so 10px of it spills over the reset button
+	// (and the range root sits at z-index 1000, on top of it). Keep the inner
+	// parts inside the 70px box.
+	.components-range-control__number .components-input-control__container {
+		width: 100% !important;
+		max-width: 100%;
+	}
+}

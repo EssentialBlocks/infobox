@@ -22,7 +22,9 @@ const config = {
 	plugins: [
 		...plugins,
 		new MiniCSSExtractPlugin({
-			filename: "dist/style.css",
+			// style.scss is split into its own chunk; everything else is editor-only.
+			filename: ({ chunk }) =>
+				chunk.name === "dist" ? "dist/editor.css" : "dist/style.css",
 		}),
 	],
 };

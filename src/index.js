@@ -14,6 +14,7 @@ import attributes from "./attributes";
 import deprecated from "./deprecated";
 import metadata from "../block.json";
 import "./style.scss";
+import "./editor.scss";
 import example from "./example";
 const { ebConditionalRegisterBlockType } = EBInfoboxControls;
 

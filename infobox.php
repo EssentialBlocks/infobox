@@ -160,10 +160,19 @@ function create_block_infobox_block_init() {
     );
 
     wp_register_style(
+        'infobox-editor-panel-css',
+        INFOBOX_ADMIN_URL . 'dist/editor.css',
+        [],
+        INFOBOX_VERSION,
+        'all'
+    );
+
+    wp_register_style(
         'infobox-editor-css',
         INFOBOX_ADMIN_URL . 'dist/modules.css',
         [
             'create-block-infobox-block-css',
+            'infobox-editor-panel-css',
             'essential-blocks-iconpicker-css',
             'dashicons',
         ],
@@ -171,28 +180,36 @@ function create_block_infobox_block_init() {
         'all'
     );
 
-    if ( ! WP_Block_Type_Registry::get_instance()->is_registered( 'essential-blocks/infobox' ) ) {
-        register_block_type(
-            Infobox_Helper::get_block_register_path( "infobox/infobox", INFOBOX_ADMIN_PATH ),
-            [
-                'editor_script'   => 'create-block-infobox-block-editor',
-                'editor_style'    => 'infobox-editor-css',
-                'render_callback' => function ( $attributes, $content ) {
-                    if ( ! is_admin() ) {
-                        wp_enqueue_style( 'create-block-infobox-block-css' );
-                        wp_enqueue_script( 'essential-blocks-eb-animation' );
+    $eb_has_block = WP_Block_Type_Registry::get_instance()->is_registered( 'essential-blocks/infobox' );
+    $block_args   = [
+        'editor_script'   => 'create-block-infobox-block-editor',
+        'editor_style'    => 'infobox-editor-css',
+        'render_callback' => function ( $attributes, $content ) {
+            if ( ! is_admin() ) {
+                wp_enqueue_style( 'create-block-infobox-block-css' );
+                wp_enqueue_script( 'essential-blocks-eb-animation' );
 
-                        // Dashicons is not loaded on the front end by default.
-                        $icon = isset( $attributes['infoboxIcon'] ) ? (string) $attributes['infoboxIcon'] : '';
-                        if ( false !== strpos( $icon, 'dashicons' ) ) {
-                            wp_enqueue_style( 'dashicons' );
-                        }
-                    }
-                    return $content;
+                // Dashicons is not loaded on the front end by default.
+                $icon = isset( $attributes['infoboxIcon'] ) ? (string) $attributes['infoboxIcon'] : '';
+                if ( false !== strpos( $icon, 'dashicons' ) ) {
+                    wp_enqueue_style( 'dashicons' );
                 }
-            ]
-        );
+            }
+            return $content;
+        }
+    ];
+
+    // Essential Blocks has its own version of this block under another name. Posts saved
+    // with this one still need its render callback and front-end assets, so keep it
+    // registered, but leave out the editor bundle, which can't run beside Essential Blocks.
+    if ( $eb_has_block ) {
+        unset( $block_args['editor_script'], $block_args['editor_style'] );
     }
+
+    register_block_type(
+        Infobox_Helper::get_block_register_path( "infobox/infobox", INFOBOX_ADMIN_PATH ),
+        $block_args
+    );
 }
 endif;
 
