@@ -160,10 +160,19 @@ function create_block_infobox_block_init() {
     );
 
     wp_register_style(
+        'infobox-editor-panel-css',
+        INFOBOX_ADMIN_URL . 'dist/editor.css',
+        [],
+        INFOBOX_VERSION,
+        'all'
+    );
+
+    wp_register_style(
         'infobox-editor-css',
         INFOBOX_ADMIN_URL . 'dist/modules.css',
         [
             'create-block-infobox-block-css',
+            'infobox-editor-panel-css',
             'essential-blocks-iconpicker-css',
             'dashicons',
         ],
@@ -171,28 +180,36 @@ function create_block_infobox_block_init() {
         'all'
     );
 
-    if ( ! WP_Block_Type_Registry::get_instance()->is_registered( 'essential-blocks/infobox' ) ) {
-        register_block_type(
-            Infobox_Helper::get_block_register_path( "infobox/infobox", INFOBOX_ADMIN_PATH ),
-            [
-                'editor_script'   => 'create-block-infobox-block-editor',
-                'editor_style'    => 'infobox-editor-css',
-                'render_callback' => function ( $attributes, $content ) {
-                    if ( ! is_admin() ) {
-                        wp_enqueue_style( 'create-block-infobox-block-css' );
-                        wp_enqueue_script( 'essential-blocks-eb-animation' );
+    $eb_has_block = WP_Block_Type_Registry::get_instance()->is_registered( 'essential-blocks/infobox' );
+    $block_args   = [
+        'editor_script'   => 'create-block-infobox-block-editor',
+        'editor_style'    => 'infobox-editor-css',
+        'render_callback' => function ( $attributes, $content ) {
+            if ( ! is_admin() ) {
+                wp_enqueue_style( 'create-block-infobox-block-css' );
+                wp_enqueue_script( 'essential-blocks-eb-animation' );
 
-                        // Dashicons is not loaded on the front end by default.
-                        $icon = isset( $attributes['infoboxIcon'] ) ? (string) $attributes['infoboxIcon'] : '';
-                        if ( false !== strpos( $icon, 'dashicons' ) ) {
-                            wp_enqueue_style( 'dashicons' );
-                        }
-                    }
-                    return $content;
+                // Dashicons is not loaded on the front end by default.
+                $icon = isset( $attributes['infoboxIcon'] ) ? (string) $attributes['infoboxIcon'] : '';
+                if ( false !== strpos( $icon, 'dashicons' ) ) {
+                    wp_enqueue_style( 'dashicons' );
                 }
-            ]
-        );
+            }
+            return $content;
+        }
+    ];
+
+    // Essential Blocks has its own version of this block under another name. Posts saved
+    // with this one still need its render callback and front-end assets, so keep it
+    // registered, but leave out the editor bundle, which can't run beside Essential Blocks.
+    if ( $eb_has_block ) {
+        unset( $block_args['editor_script'], $block_args['editor_style'] );
     }
+
+    register_block_type(
+        Infobox_Helper::get_block_register_path( "infobox/infobox", INFOBOX_ADMIN_PATH ),
+        $block_args
+    );
 }
 endif;
 
@@ -209,7 +226,23 @@ function infobox_block_icon_selected_style() {
         'eb-block-icon-selected',
         plugins_url( 'assets/css/block-icon-selected.css', __FILE__ ),
         [],
-        '1.0.0'
+        INFOBOX_VERSION
     );
 }
 add_action( 'enqueue_block_editor_assets', 'infobox_block_icon_selected_style' );
+
+/**
+ * Let Essential Blocks' animation assets win on the front end when it is active.
+ *
+ * Both plugins register these handles and the first registration wins. This
+ * plugin's loader doesn't set `window.ebAnimationLoaded`, so Essential Blocks'
+ * failsafe would reveal every animated block without playing it. Essential Blocks
+ * registers its own at priority 20 and handles the same `.eb___animated` classes.
+ */
+function infobox_use_essential_blocks_animation() {
+    if ( defined( 'ESSENTIAL_BLOCKS_VERSION' ) ) {
+        wp_deregister_script( 'essential-blocks-eb-animation' );
+        wp_deregister_style( 'essential-blocks-animation' );
+    }
+}
+add_action( 'wp_enqueue_scripts', 'infobox_use_essential_blocks_animation', 19 );
