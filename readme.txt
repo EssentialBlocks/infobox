@@ -4,7 +4,7 @@ Tags: block, blocks, infobox, info box, icon box, gutenberg, gutenberg blocks
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -91,10 +91,19 @@ Google Fonts is provided by Google LLC: [Terms of Service](https://policies.goog
 == Changelog ==
 
 = 1.3.2 - 02/11/2026 =
+* Added: New icon picker with Font Awesome, Dashicons and SVG upload
+* Added: Image caption (with presets), figure tag and image link options
+* Added: Prefix / badge above the title or pinned to a corner of the box
+* Added: Shadow presets
+* Added: Max width and Equal Height options for boxes side by side
+* Added: Hover animations for the box and its icon or image
+* Added: Edit the title, subtitle and description from the sidebar
+* Improved: Media options moved to the General tab
 * Improved: Security enhancements
 * Fixed: Existing Infobox blocks stopped working on the front end when Essential Blocks is active
 * Fixed: Animated blocks appeared without playing their animation when Essential Blocks is active
 * Improved: Reduced unnecessary front-end CSS
+* Fixed: Responsive settings had no effect in the editor's Tablet and Mobile previews
 
 = 1.3.1 - 26/10/2026 =
 * Improved: Security enhancements
