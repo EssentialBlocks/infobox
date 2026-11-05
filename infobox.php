@@ -195,7 +195,7 @@ function create_block_infobox_block_init() {
                     wp_enqueue_style( 'dashicons' );
                 }
             }
-            return $content;
+            return infobox_clean_link_hrefs( $content );
         }
     ];
 
@@ -214,6 +214,53 @@ function create_block_infobox_block_init() {
 endif;
 
 add_action( 'init', 'create_block_infobox_block_init', 99 );
+
+/**
+ * Whether a link URL uses a scheme that runs script. Mirrors sanitizeLinkUrl()
+ * in src/helpers.js: browsers ignore whitespace and control characters inside a
+ * scheme, so they are removed (after decoding entities) before it is checked.
+ *
+ * @param string $url Link URL as written in the href attribute.
+ * @return bool
+ */
+function infobox_is_script_url( $url ) {
+    $plain = html_entity_decode( (string) $url, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+    $plain = preg_replace( '/[\x00-\x20\x7f]+/', '', $plain );
+    return (bool) preg_match( '/^(?:javascript|vbscript|data):/i', $plain );
+}
+
+/**
+ * Clear script links from the box and button links of a saved block.
+ *
+ * The editor sanitizes these links on save, but posts saved before that still
+ * hold the old markup until they are edited again. Only the block's own link
+ * anchors are touched; links inside the description are left as the author wrote them.
+ *
+ * @param string $content Saved block markup.
+ * @return string
+ */
+function infobox_clean_link_hrefs( $content ) {
+    if ( ! is_string( $content ) || false === stripos( $content, 'href' ) ) {
+        return $content;
+    }
+    return preg_replace_callback(
+        // Quoted values may hold ">", so step over them as a whole.
+        '/<a\b(?:[^>"\']|"[^"]*"|\'[^\']*\')*>/i',
+        function ( $tag ) {
+            if ( ! preg_match( '/\sclass\s*=\s*(["\'])[^"\']*\b(?:infobox-btn|info-click-link)\b/i', $tag[0] ) ) {
+                return $tag[0];
+            }
+            return preg_replace_callback(
+                '/(\shref\s*=\s*)(["\'])(.*?)\2/is',
+                function ( $href ) {
+                    return infobox_is_script_url( $href[3] ) ? $href[1] . $href[2] . $href[2] : $href[0];
+                },
+                $tag[0]
+            );
+        },
+        $content
+    );
+}
 
 /**
  * Block icons are filled #6C3BFF, which almost disappears on the highlighted row of

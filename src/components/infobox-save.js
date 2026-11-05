@@ -39,6 +39,7 @@ export default function InfoboxContainer({ requiredProps }) {
         subTitleTag,
         btnEffect,
         classHook,
+        cleanLink = sanitizeLinkUrl,
     } = requiredProps;
 
     // With every image extra off this renders exactly the pre-existing
@@ -148,7 +149,7 @@ export default function InfoboxContainer({ requiredProps }) {
                         {enableButton && !isInfoClick ? (
                             <div className="eb-infobox-btn-wrapper">
                                 <a
-                                    href={infoboxLink ? sanitizeLinkUrl(infoboxLink) : infoboxLink}
+                                    href={infoboxLink ? cleanLink(infoboxLink) : infoboxLink}
                                     target={linkNewTab ? "_blank" : "_self"}
                                     rel="noopener noreferrer"
                                     className={`infobox-btn  ${btnEffect || " "

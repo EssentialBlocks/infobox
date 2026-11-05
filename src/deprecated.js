@@ -10,8 +10,26 @@ import InfoboxContainer4 from "./components/infobox-save-depricated-4";
 import { omit } from "lodash";
 
 import attributes from "./attributes";
+import { makeSave } from "./save";
+import { sanitizeLinkUrl } from "./helpers";
 
 const deprecated = [
+    // 1.3.2: the box / button link is sanitized on save. Blocks saved earlier
+    // with a script link (javascript:, data:, ...) no longer match, so this
+    // reads them with the link as stored and clears it when they are migrated.
+    {
+        attributes: { ...attributes },
+        supports: {
+            align: ["wide", "full"],
+        },
+        migrate(attributes) {
+            return {
+                ...attributes,
+                infoboxLink: sanitizeLinkUrl(attributes.infoboxLink),
+            };
+        },
+        save: makeSave((url) => url),
+    },
     {
         attributes: omit({ ...attributes }, ["infoboxIcon"]),
         migrate(attributes) {
