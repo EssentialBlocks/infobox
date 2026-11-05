@@ -102,7 +102,7 @@ Google Fonts is provided by Google LLC: [Terms of Service](https://policies.goog
 * Improved: Security enhancements
 * Fixed: Existing Infobox blocks stopped working on the front end when Essential Blocks is active
 * Fixed: Animated blocks appeared without playing their animation when Essential Blocks is active
-* Improved: Reduced unnecessary front-end CSS
+* Improved: Editor-only styles no longer load on the front end
 * Fixed: Responsive settings had no effect in the editor's Tablet and Mobile previews
 
 = 1.3.1 - 26/10/2026 =
