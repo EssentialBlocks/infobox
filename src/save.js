@@ -3,7 +3,13 @@ import { useBlockProps } from "@wordpress/block-editor";
 import InfoboxContainer from "./components/infobox-save";
 import { sanitizeLinkUrl } from "./helpers";
 
-export default function save({ attributes }) {
+/**
+ * Build the save function. `cleanLink` filters the box / button link; the
+ * current save uses sanitizeLinkUrl, and a deprecation reuses the same markup
+ * with the link left as stored so blocks saved before links were sanitized
+ * still validate (see deprecated.js).
+ */
+export const makeSave = (cleanLink) => function save({ attributes }) {
     const {
         blockId,
         selectedIcon,
@@ -70,13 +76,14 @@ export default function save({ attributes }) {
         subTitleTag,
         btnEffect,
         classHook,
+        cleanLink,
     };
 
     return (
         <div {...useBlockProps.save()}>
             {isInfoClick ? (
                 <a
-                    href={infoboxLink ? sanitizeLinkUrl(infoboxLink) : infoboxLink}
+                    href={infoboxLink ? cleanLink(infoboxLink) : infoboxLink}
                     target={linkNewTab ? "_blank" : "_self"}
                     rel="noopener noreferrer"
                     className="info-click-link info-wrap-link"
@@ -88,4 +95,6 @@ export default function save({ attributes }) {
             )}
         </div>
     );
-}
+};
+
+export default makeSave(sanitizeLinkUrl);
