@@ -68,31 +68,36 @@ and compiled assets are written to `dist/`.
 
 ### Node version
 
-`.nvmrc` pins **Node 14**, matching `node-version` in `.github/workflows/deploy.yml`.
-Run `nvm use` to match the release environment.
+`.nvmrc` pins **Node 22**, matching `node-version` in `.github/workflows/deploy.yml`
+and `engines` in `package.json`. Run `nvm use` to match the release environment.
 
-Node 14 reached end of life on 2023-04-30. It is pinned deliberately, and it is
-**technical debt** — not a recommendation:
+The root build needs Node **20.19 or newer**:
 
-- The **root** build is not the problem. It has been verified on Node 20 / npm 10 and
-  produces a byte-identical `dist/index.js`. It would move to a current LTS today.
-- The **`controls/` submodule** is the constraint. Its dependency tree only resolves on
-  npm 6, which ships with Node 14:
-  - `react-sortable-hoc@2.0.0` declares `peer react@"^16.3.0 || ^17.0.0"`, while the
-    `@wordpress/*` packages require React 18. npm 7+ enforces peer ranges, so
-    `npm install` fails with `ERESOLVE`.
-  - `npm install --legacy-peer-deps` gets past that, then the build fails with
-    `Cannot find module 'ajv/dist/compile/codegen'` — flattening hoists `ajv@6`
-    (required by eslint 8) while `ajv-keywords@5` needs the `ajv@8` API.
-    `--legacy-peer-deps` is therefore **not** a fix and must not be adopted in CI.
-  - Bumping the submodule does not help: `controls` master still declares
-    `react-sortable-hoc@^2.0.0` with no `overrides` and no `engines`.
+- webpack ≥ 5.108 emits `Object.hasOwn(...)` into generated runtime code, and
+  `mini-css-extract-plugin` executes that code during the build. Node 14 fails with
+  `Object.hasOwn is not a function`.
+- The locked `sass` release declares `engines.node >= 20.19.0`.
 
-**Before the pipeline can move to Node 22+**, `controls` must migrate off
+#### Building `controls/` locally
+
+CI never builds the `controls/` submodule. The root webpack entry (`./src/index.js`)
+does not import it. Building `controls/` yourself (to regenerate `dist/modules.js`) is
+the one case that still needs an old toolchain: its dependency tree only resolves on
+npm 6, which ships with Node 14.
+
+- `react-sortable-hoc@2.0.0` declares `peer react@"^16.3.0 || ^17.0.0"`, while the
+  `@wordpress/*` packages require React 18. npm 7+ enforces peer ranges, so
+  `npm install` fails with `ERESOLVE`.
+- `npm install --legacy-peer-deps` gets past that, then the build fails with
+  `Cannot find module 'ajv/dist/compile/codegen'` — flattening hoists `ajv@6`
+  (required by eslint 8) while `ajv-keywords@5` needs the `ajv@8` API.
+  `--legacy-peer-deps` is therefore **not** a fix.
+- Bumping the submodule does not help: `controls` master still declares
+  `react-sortable-hoc@^2.0.0` with no `overrides` and no `engines`.
+
+This is **technical debt**. Removing it requires `controls` to migrate off
 `react-sortable-hoc` (the upstream successor is [`@dnd-kit`](https://dndkit.com/), which
-`controls` master already depends on for other code). Raising `node-version` on its own
-would break the ability to build `controls` at all. Track this as a separate task and
-change `.nvmrc`, `engines`, and `deploy.yml` together with that migration.
+`controls` master already depends on for other code). Track that as a separate task.
 
 ### `dist/` is a committed build artifact
 

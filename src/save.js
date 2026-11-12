@@ -1,6 +1,7 @@
 import { useBlockProps } from "@wordpress/block-editor";
 
 import InfoboxContainer from "./components/infobox-save";
+import { sanitizeLinkUrl } from "./helpers";
 
 export default function save({ attributes }) {
     const {
@@ -11,6 +12,16 @@ export default function save({ attributes }) {
         media,
         imageUrl,
         imageAlt,
+        useFigureTag,
+        displayCaption,
+        imageCaption,
+        captionPreset,
+        showPrefix,
+        prefixText,
+        prefixStyle,
+        prefixPosition,
+        enableImageLink,
+        imageLink,
         enableSubTitle,
         enableDescription,
         infoboxLink,
@@ -35,6 +46,16 @@ export default function save({ attributes }) {
         media,
         imageUrl,
         imageAlt,
+        useFigureTag,
+        displayCaption,
+        imageCaption,
+        captionPreset,
+        showPrefix,
+        prefixText,
+        prefixStyle,
+        prefixPosition,
+        enableImageLink,
+        imageLink,
         enableSubTitle,
         enableDescription,
         infoboxLink,
@@ -55,7 +76,7 @@ export default function save({ attributes }) {
         <div {...useBlockProps.save()}>
             {isInfoClick ? (
                 <a
-                    href={infoboxLink}
+                    href={infoboxLink ? sanitizeLinkUrl(infoboxLink) : infoboxLink}
                     target={linkNewTab ? "_blank" : "_self"}
                     rel="noopener noreferrer"
                     className="info-click-link info-wrap-link"

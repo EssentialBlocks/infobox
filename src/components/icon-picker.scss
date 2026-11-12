@@ -1,0 +1,137 @@
+// Inspector icon control (see icon-picker.js). Ported from the newer
+// `controls` icon picker styles.
+.eb-icon-picker-base {
+	.ebip__wrap {
+		position: relative;
+		overflow: hidden;
+		border: 1px solid #d0d5dd;
+		border-radius: 6px;
+	}
+
+	// Checkerboard preview area
+	.ebip__preview {
+		position: relative;
+		height: 120px;
+		background-color: #bbb;
+		background-image:
+			linear-gradient(45deg, rgba(255, 255, 255, 0.35) 25%, transparent 25%),
+			linear-gradient(-45deg, rgba(255, 255, 255, 0.35) 25%, transparent 25%),
+			linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.35) 75%),
+			linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.35) 75%);
+		background-size: 20px 20px;
+		background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+
+		.components-panel__row {
+			display: none !important;
+		}
+
+		// Center the trigger icon rendered by the underlying picker
+		#wipIcon {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 100%;
+			max-width: none;
+			height: 100%;
+			margin: 0;
+
+			.dashicon,
+			i {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: auto;
+				height: auto;
+				font-size: 48px;
+				color: #2f3a40;
+			}
+		}
+
+		// Nothing selected: the placeholder is not a useful click target
+		&:not(.ebip__preview--icon) #wipIcon {
+			pointer-events: none;
+		}
+
+		.ebip__preview__svg_wrap {
+			position: absolute;
+			inset: 0;
+			z-index: 2;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			img {
+				max-width: 64px;
+				max-height: 64px;
+			}
+		}
+
+		// SVG selected: keep the picker mounted (for its popover) but hidden
+		&.ebip__preview--svg #wipIcon {
+			opacity: 0;
+			pointer-events: none;
+		}
+
+		.ebip__clear {
+			position: absolute;
+			top: 8px;
+			right: 8px;
+			z-index: 3;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 28px;
+			height: 28px;
+			padding: 0;
+			border: none;
+			background: rgba(255, 255, 255, 0.9);
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+			opacity: 0;
+			transform: translateY(-6px);
+			transition: opacity 0.15s ease, transform 0.15s ease;
+			pointer-events: none;
+		}
+	}
+
+	// Dark action bar, revealed on hover
+	.ebip__actions {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 3;
+		display: flex;
+		align-items: center;
+		height: 36px;
+		background: #101828;
+		opacity: 0;
+		transition: opacity 0.2s ease;
+		pointer-events: none;
+
+		.ebip__action {
+			flex: 1;
+			justify-content: center;
+			border: 0;
+			border-radius: 0;
+			background: transparent;
+			box-shadow: none;
+			color: #fff;
+		}
+
+		.ebip__divider {
+			width: 1px;
+			height: 60%;
+			background: rgba(255, 255, 255, 0.2);
+		}
+	}
+
+	.ebip__wrap:hover,
+	.ebip__wrap:focus-within {
+		.ebip__actions,
+		.ebip__preview .ebip__clear {
+			opacity: 1;
+			transform: translateY(0);
+			pointer-events: auto;
+		}
+	}
+}
