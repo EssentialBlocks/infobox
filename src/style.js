@@ -4,6 +4,8 @@ import {
     typoPrefix_subTitle,
     typoPrefix_number,
     typoPrefix_buttonText,
+    typoPrefix_caption,
+    typoPrefix_prefix,
 } from "./constants/typographyPrefixConstants";
 
 import {
@@ -17,6 +19,8 @@ import {
     subTitlePadding,
     wrapperPadding,
     wrapperMargin,
+    prefixPadding,
+    prefixMargin,
 } from "./constants/dimensionsConstants";
 
 import { infoWrapBg, infoBtnBg } from "./constants/backgroundsConstants";
@@ -27,6 +31,7 @@ import {
     mediaImageWidth,
     mediaImageHeight,
     mediaContentGap,
+    wrapperMaxWidth,
 } from "./constants/rangeNames";
 const {
     softMinifyCssStrings,
@@ -87,10 +92,30 @@ export default function Style(props) {
         MOBnumberSizeUnit,
         isInfoClick,
         enableButton,
-        btnEffect
+        btnEffect,
+        displayCaption,
+        imageCaption,
+        captionColor,
+        captionBgColor,
+        captionPreset,
+        showPrefix,
+        prefixText,
+        prefixStyle,
+        prefixColor = "#fff",
+        prefixBgColor = "rgba(255,255,255,0.2)",
+        prefixHoverColor,
+        prefixHoverBgColor,
+        fillHeight,
+        hideOnDesktop,
+        hideOnTab,
+        hideOnMobile,
+        boxHoverEffect,
+        mediaHoverEffect,
     } = attributes;
 
     const buttonThakbe = !isInfoClick && enableButton;
+    const hasCaption = media === "image" && displayCaption && imageCaption;
+    const hasPrefix = showPrefix && prefixText;
 
     //
     // styling codes starts from here
@@ -124,6 +149,56 @@ export default function Style(props) {
         attributes,
         prefixConstant: typoPrefix_content,
         defaultFontSize: 20,
+    });
+
+    const {
+        typoStylesDesktop: captionTypoStylesDesktop,
+        typoStylesTab: captionTypoStylesTab,
+        typoStylesMobile: captionTypoStylesMobile,
+    } = generateTypographyStyles({
+        attributes,
+        prefixConstant: typoPrefix_caption,
+        defaultFontSize: 14,
+    });
+
+    const {
+        typoStylesDesktop: prefixTypoStylesDesktop,
+        typoStylesTab: prefixTypoStylesTab,
+        typoStylesMobile: prefixTypoStylesMobile,
+    } = generateTypographyStyles({
+        attributes,
+        prefixConstant: typoPrefix_prefix,
+        defaultFontSize: 13,
+    });
+
+    const {
+        dimensionStylesDesktop: prefixPaddingDesktop,
+        dimensionStylesTab: prefixPaddingTab,
+        dimensionStylesMobile: prefixPaddingMobile,
+    } = generateDimensionsControlStyles({
+        attributes,
+        controlName: prefixPadding,
+        styleFor: "padding",
+    });
+
+    const {
+        dimensionStylesDesktop: prefixMarginDesktop,
+        dimensionStylesTab: prefixMarginTab,
+        dimensionStylesMobile: prefixMarginMobile,
+    } = generateDimensionsControlStyles({
+        attributes,
+        controlName: prefixMargin,
+        styleFor: "margin",
+    });
+
+    const {
+        rangeStylesDesktop: maxWidthDesktop,
+        rangeStylesTab: maxWidthTab,
+        rangeStylesMobile: maxWidthMobile,
+    } = generateResponsiveRangeStyles({
+        controlName: wrapperMaxWidth,
+        property: "max-width",
+        attributes,
     });
 
     const {
@@ -358,14 +433,73 @@ export default function Style(props) {
         attributes,
     });
 
+    // With equal height the contents become a flex column, so the button
+    // can sit at the bottom of every box (the extra space goes above it).
+    // Flex items stretch, so the inline-block prefix needs an explicit
+    // align-self matching the text alignment to keep its own width.
+    const fillHeightPrefixAlign =
+        { left: "flex-start", right: "flex-end", center: "center" }[
+            contentsAlignment || contentAlignment
+        ] || "flex-start";
+
+    // Equal height (fillHeight): in a flex or grid parent (e.g. a Group in
+    // Row layout, which centers items) align-self: stretch does the work; it
+    // only applies while height is auto. In a flow parent (e.g. a Column,
+    // already stretched by Columns) height: 100% does it. .eb-parent-wrapper
+    // is repeated in the selector to outrank the ".eb-parent-<id> { display:
+    // block }" that the Hide on Desktop / Tab / Mobile controls write. That
+    // also outranks their "display: none", so the display is set per device
+    // here and a hidden device gets "display: none" (or nothing on desktop,
+    // where the Hide control's own rule then applies).
+    const fillHeightDisplay = (hidden) =>
+        `.eb-parent-wrapper.eb-parent-${blockId} { display: ${hidden ? "none" : "flex"}; }`;
+
+    // Hover animations. Transforms only, so they never change layout.
+    const boxHoverTransform = {
+        lift: "translateY(-8px)",
+        scale: "scale(1.03)",
+        shrink: "scale(0.97)",
+    }[boxHoverEffect];
+    const mediaHoverTransform = {
+        "zoom-in": "scale(1.15)",
+        "zoom-out": "scale(0.85)",
+        "move-up": "translateY(-8px)",
+        rotate: "rotate(15deg)",
+        spin: "rotate(360deg)",
+    }[mediaHoverEffect];
+    const mediaHoverAnimation = {
+        pulse: "eb-infobox-pulse 0.8s ease-in-out infinite",
+        bounce: "eb-infobox-bounce 0.8s ease",
+    }[mediaHoverEffect];
+    const hasMediaHover =
+        media !== "none" && (mediaHoverTransform || mediaHoverAnimation);
+
     const wrapperStylesDesktop = `
 		.eb-infobox-wrapper.${blockId} {
 			${wrapperMarginStylesDesktop}
 			${wrapperPaddingStylesDesktop}
 			${bdShadowStyesDesktop}
 			${backgroundStylesDesktop}
-			transition: ${bgTransitionStyle}, ${bdShadowTransitionStyle};
+			transition: ${bgTransitionStyle}, ${bdShadowTransitionStyle}${boxHoverTransform ? ", transform 0.3s ease" : ""};
 		}
+
+		${boxHoverTransform
+            ? `.eb-infobox-wrapper.${blockId}:hover { transform: ${boxHoverTransform}; }`
+            : " "
+        }
+
+		${hasMediaHover
+            ? `
+				.eb-infobox-wrapper.${blockId} .icon-img-wrapper {
+					transition: transform ${mediaHoverEffect === "spin" ? "0.6s" : "0.3s"} ease;
+				}
+				.eb-infobox-wrapper.${blockId}:hover .icon-img-wrapper {
+					${mediaHoverTransform ? `transform: ${mediaHoverTransform};` : " "}
+					${mediaHoverAnimation ? `animation: ${mediaHoverAnimation};` : " "}
+				}
+				`
+            : " "
+        }
 
 		.eb-infobox-wrapper.${blockId}:hover{
 			${hoverBackgroundStylesDesktop}
@@ -380,6 +514,77 @@ export default function Style(props) {
 		.eb-infobox-wrapper.${blockId}:hover:before{
 			${hoverOverlayStylesDesktop}
 		}
+
+		${maxWidthDesktop
+            ? `
+				.eb-parent-${blockId} {
+					${maxWidthDesktop}
+					margin-left: auto;
+					margin-right: auto;
+				}
+				`
+            : " "
+        }
+
+		${fillHeight
+            ? `
+				.wp-block-infobox-infobox:has(.eb-parent-${blockId}) {
+					align-self: stretch;
+				}
+				.wp-block-infobox-infobox:has(.eb-parent-${blockId}):not(:is(.is-layout-flex, .is-layout-grid) > *) {
+					height: 100%;
+				}
+				.wp-block-infobox-infobox:has(.eb-parent-${blockId}) > .info-click-link {
+					height: 100%;
+				}
+				.eb-parent-wrapper.eb-parent-${blockId} {
+					height: 100%;
+					${hideOnDesktop ? " " : "display: flex;"}
+					flex-direction: column;
+				}
+				.eb-parent-wrapper.eb-parent-${blockId} > .eb-infobox-wrapper {
+					flex: 1 1 auto;
+					display: flex;
+					flex-direction: column;
+				}
+				.eb-infobox-wrapper.${blockId} > .infobox-wrapper-inner {
+					flex: 1 1 auto;
+				}
+				.eb-infobox-wrapper.${blockId} .contents-wrapper {
+					flex: 1 1 auto;
+					display: flex;
+					flex-direction: column;
+				}
+				.eb-infobox-wrapper.${blockId} .contents-wrapper > .eb-infobox-prefix {
+					align-self: ${fillHeightPrefixAlign};
+				}
+				.eb-infobox-wrapper.${blockId} .contents-wrapper > .eb-infobox-btn-wrapper {
+					margin-top: auto;
+				}
+				`
+            : " "
+        }
+
+		${hasPrefix
+            ? `
+				.eb-infobox-wrapper.${blockId} .eb-infobox-prefix {
+					${prefixTypoStylesDesktop}
+					${prefixPaddingDesktop}
+					${prefixMarginDesktop}
+					color: ${prefixColor};
+					${prefixStyle === "badge" ? `background-color: ${prefixBgColor};` : " "}
+					transition: color 0.3s, background-color 0.3s;
+				}
+				.eb-infobox-wrapper.${blockId} .eb-infobox-prefix:hover {
+					${prefixHoverColor ? `color: ${prefixHoverColor};` : " "}
+					${prefixStyle === "badge" && prefixHoverBgColor
+                ? `background-color: ${prefixHoverBgColor};`
+                : " "
+            }
+				}
+				`
+            : " "
+        }
 
 		.eb-infobox-wrapper.${blockId} .infobox-wrapper-inner {
 			${flexDirection ? `flex-direction: ${flexDirection};` : " "}
@@ -533,6 +738,20 @@ export default function Style(props) {
             : " "
         }
 
+		${hasCaption
+            ? `
+				.eb-infobox-wrapper.${blockId} .eb-infobox-image-caption {
+					${captionTypoStylesDesktop}
+					${captionColor ? `color: ${captionColor};` : " "}
+					${captionPreset === "card" && captionBgColor
+                ? `background-color: ${captionBgColor};`
+                : " "
+            }
+				}
+				`
+            : " "
+        }
+
 		${buttonThakbe
             ? `
 
@@ -593,6 +812,15 @@ export default function Style(props) {
 		.eb-infobox-wrapper.${blockId}:before{
 			${overlayStylesTab}
 		}
+
+		${maxWidthTab ? `.eb-parent-${blockId} { ${maxWidthTab} }` : " "}
+
+		${fillHeight ? fillHeightDisplay(hideOnTab) : " "}
+
+		${hasPrefix
+            ? `.eb-infobox-wrapper.${blockId} .eb-infobox-prefix { ${prefixTypoStylesTab} ${prefixPaddingTab} ${prefixMarginTab} }`
+            : " "
+        }
 
 		.eb-infobox-wrapper.${blockId}:hover:before{
 			${hoverOverlayStylesTab}
@@ -722,6 +950,15 @@ export default function Style(props) {
             : " "
         }
 
+		${hasCaption
+            ? `
+				.eb-infobox-wrapper.${blockId} .eb-infobox-image-caption {
+					${captionTypoStylesTab}
+				}
+				`
+            : " "
+        }
+
 		${buttonThakbe
             ? `
 				.eb-infobox-wrapper.${blockId} .contents-wrapper .infobox-btn{
@@ -765,6 +1002,15 @@ export default function Style(props) {
 		.eb-infobox-wrapper.${blockId}:before{
 			${overlayStylesMobile}
 		}
+
+		${maxWidthMobile ? `.eb-parent-${blockId} { ${maxWidthMobile} }` : " "}
+
+		${fillHeight ? fillHeightDisplay(hideOnMobile) : " "}
+
+		${hasPrefix
+            ? `.eb-infobox-wrapper.${blockId} .eb-infobox-prefix { ${prefixTypoStylesMobile} ${prefixPaddingMobile} ${prefixMarginMobile} }`
+            : " "
+        }
 
 
 		.eb-infobox-wrapper.${blockId}:hover:before{
@@ -888,6 +1134,15 @@ export default function Style(props) {
 
 				}
 
+				`
+            : " "
+        }
+
+		${hasCaption
+            ? `
+				.eb-infobox-wrapper.${blockId} .eb-infobox-image-caption {
+					${captionTypoStylesMobile}
+				}
 				`
             : " "
         }
