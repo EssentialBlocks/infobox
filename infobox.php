@@ -195,7 +195,7 @@ function create_block_infobox_block_init() {
                     wp_enqueue_style( 'dashicons' );
                 }
             }
-            return $content;
+            return Infobox_Helper::sanitize_links( $content );
         }
     ];
 

@@ -90,13 +90,15 @@ Google Fonts is provided by Google LLC: [Terms of Service](https://policies.goog
 
 == Changelog ==
 
-= 1.3.2 - 12/11/2026 =
-* Added: Prefix option with text & badge style
-* Added: Hover animation, shadow presets, max width & equal height options
-* Added: Image caption & link option
-* Fixed: Frontend conflict with Essential Blocks
+= 1.3.2 - 02/11/2026 =
+* Added: Prefix / badge text above the title
+* Added: Image caption, image link and figure tag options
+* Added: Hover animation, equal height and max width options
 * Improved: Security enhancements
-* Few minor bug fixes & improvements
+* Improved: Links with javascript:, vbscript: or data: URLs are cleared on the front end
+* Fixed: Existing Infobox blocks stopped working on the front end when Essential Blocks is active
+* Fixed: Animated blocks appeared without playing their animation when Essential Blocks is active
+* Improved: Editor-only styles no longer load on the front end
 
 = 1.3.1 - 26/10/2026 =
 * Improved: Security enhancements
