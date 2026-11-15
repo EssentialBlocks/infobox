@@ -68,6 +68,10 @@ class Infobox_Helper
                 // Read by EBIconPicker in the controls bundle. Without it the picker
                 // hides the Font Awesome library and offers only Dashicons.
                 'fontAwesome' => 'true',
+                // Read by StyleComponent for the editor's tablet and mobile
+                // media queries. Without it they become "max-width: undefinedpx"
+                // and the Tablet / Mobile previews ignore responsive settings.
+                'responsiveBreakpoints' => self::get_responsive_breakpoints(),
             ));
 
             if ($hook == 'post-new.php' || $hook == 'post.php') {
@@ -95,6 +99,30 @@ class Infobox_Helper
      * @param string $blockPath Absolute path to the directory holding block.json.
      * @return string
      */
+    /**
+     * Tablet and mobile breakpoints for the editor, the same ones the style
+     * handler uses for the front-end CSS (Essential Blocks' setting when it is
+     * saved, otherwise 1024 / 767).
+     */
+    public static function get_responsive_breakpoints()
+    {
+        $breakpoints = array(
+            'tablet' => 1024,
+            'mobile' => 767,
+        );
+
+        if (class_exists('EbStyleHandlerParseCss') && method_exists('EbStyleHandlerParseCss', 'get_responsive_breakpoints')) {
+            foreach (array_keys($breakpoints) as $size) {
+                $value = absint(EbStyleHandlerParseCss::get_responsive_breakpoints($size));
+                if ($value > 0) {
+                    $breakpoints[$size] = $value;
+                }
+            }
+        }
+
+        return $breakpoints;
+    }
+
     public static function get_block_register_path($blockname, $blockPath)
     {
         return $blockPath;
